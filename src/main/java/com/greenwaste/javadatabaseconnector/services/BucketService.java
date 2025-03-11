@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.businesslogiclayer;
+package com.greenwaste.javadatabaseconnector.services;
 
 import com.greenwaste.javadatabaseconnector.model.Bucket;
 import jakarta.persistence.EntityManager;
