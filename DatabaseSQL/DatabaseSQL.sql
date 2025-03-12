@@ -1,111 +1,110 @@
-CREATE
-DATABASE green_waste_management;
+CREATE DATABASE green_waste_management;
 
 -- Dados para serem usados como role e status
 CREATE TYPE user_role AS ENUM ('ADMIN', 'SMAS', 'MUNICIPALITY');
 CREATE TYPE association_status AS ENUM ('ACTIVE', 'INACTIVE');
 
--- Tabelas não dependentes
-CREATE TABLE "User"
+-- Tabelas nÃ£o dependentes
+CREATE TABLE "user"
 (
-    USER_ID     SERIAL PRIMARY KEY,
-    Name        VARCHAR(255)        NOT NULL,
-    Username    VARCHAR(100) UNIQUE NOT NULL,
-    Password    VARCHAR(255)        NOT NULL,
-    Email       VARCHAR(255) UNIQUE NOT NULL,
-    PhoneNumber VARCHAR(16),
-    Role        user_role           NOT NULL
+    user_id     SERIAL PRIMARY KEY,
+    name        VARCHAR(255)        NOT NULL,
+    username    VARCHAR(100) UNIQUE NOT NULL,
+    password    VARCHAR(255)        NOT NULL,
+    email       VARCHAR(255) UNIQUE NOT NULL,
+    phone_number VARCHAR(16),
+    role        user_role           NOT NULL
 );
 
-CREATE TABLE "PostalCode"
+CREATE TABLE postal_code
 (
-    POSTAL_CODE_ID SERIAL PRIMARY KEY,
-    PostalCode     VARCHAR(20)  NOT NULL UNIQUE,
-    County         VARCHAR(100) NOT NULL,
-    District       VARCHAR(100) NOT NULL
+    postal_code_id SERIAL PRIMARY KEY,
+    postal_code     VARCHAR(20)  NOT NULL UNIQUE,
+    county         VARCHAR(100) NOT NULL,
+    district       VARCHAR(100) NOT NULL
 );
 
 -- Tabelas dependentes
-CREATE TABLE "Address"
+CREATE TABLE address
 (
-    USER_ID        INT PRIMARY KEY,
-    FloorDetails   VARCHAR(255),
-    FloorNumber    INT,
-    DoorNumber     INT,
-    Street         VARCHAR(255),
-    POSTAL_CODE_ID INT NOT NULL,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE,
-    FOREIGN KEY (POSTAL_CODE_ID) REFERENCES "PostalCode" (POSTAL_CODE_ID) ON DELETE RESTRICT
+    user_id        INT PRIMARY KEY,
+    floor_details   VARCHAR(255),
+    floor_number    INT,
+    door_number     INT,
+    street         VARCHAR(255),
+    postal_code_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (postal_code_id) REFERENCES postal_code (postal_code_id) ON DELETE RESTRICT
 );
 
-CREATE TABLE "Admin"
+CREATE TABLE admin
 (
-    USER_ID         INT PRIMARY KEY,
-    CitizenCardCode VARCHAR(50) UNIQUE NOT NULL,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE
+    user_id         INT PRIMARY KEY,
+    citizen_card_code VARCHAR(50) UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE "SMAS"
+CREATE TABLE smas
 (
-    USER_ID         INT PRIMARY KEY,
-    Position        VARCHAR(255),
-    EmployeeCode    VARCHAR(50) UNIQUE NOT NULL,
-    CitizenCardCode VARCHAR(50) UNIQUE NOT NULL,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE
+    user_id         INT PRIMARY KEY,
+    position        VARCHAR(255),
+    employee_code    VARCHAR(50) UNIQUE NOT NULL,
+    citizen_card_code VARCHAR(50) UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Municipality"
+CREATE TABLE municipality
 (
-    USER_ID         INT PRIMARY KEY,
-    CitizenCardCode VARCHAR(50) UNIQUE NOT NULL,
-    NIF             VARCHAR(9) UNIQUE  NOT NULL,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE
+    user_id         INT PRIMARY KEY,
+    citizen_card_code VARCHAR(50) UNIQUE NOT NULL,
+    nif             VARCHAR(9) UNIQUE  NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Bucket"
+CREATE TABLE bucket
 (
-    BUCKET_ID    SERIAL PRIMARY KEY,
-    Capacity     DECIMAL(14, 2) NOT NULL,
-    IsAssociated BOOLEAN DEFAULT FALSE
+    bucket_id    SERIAL PRIMARY KEY,
+    capacity     DECIMAL(14, 2) NOT NULL,
+    is_associated BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE "Container"
+CREATE TABLE container
 (
-    CONTAINER_ID       SERIAL PRIMARY KEY,
-    Capacity           DECIMAL(14, 2) NOT NULL,
-    Localization       VARCHAR(255)   NOT NULL,
-    CurrentVolumeLevel DECIMAL(14, 2) DEFAULT 0
+    container_id       SERIAL PRIMARY KEY,
+    capacity           DECIMAL(14, 2) NOT NULL,
+    localization       VARCHAR(255)   NOT NULL,
+    current_volume_level DECIMAL(14, 2) DEFAULT 0
 );
 
-CREATE TABLE "Bucket_Municipality"
+CREATE TABLE bucket_municipality
 (
-    ASSOCIATION_ID         SERIAL PRIMARY KEY,
-    USER_ID                INT                NOT NULL,
-    BUCKET_ID              INT                NOT NULL,
-    TimeStampOfAssociation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Status                 association_status NOT NULL,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE,
-    FOREIGN KEY (BUCKET_ID) REFERENCES "Bucket" (BUCKET_ID) ON DELETE CASCADE
+    association_id         SERIAL PRIMARY KEY,
+    user_id                INT                NOT NULL,
+    bucket_id              INT                NOT NULL,
+    timestamp_of_association TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status                 association_status NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (bucket_id) REFERENCES bucket (bucket_id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Bucket_Municipality_Container"
+CREATE TABLE bucket_municipality_container
 (
-    DEPOSIT_ID       SERIAL PRIMARY KEY,
-    ASSOCIATION_ID   INT            NOT NULL,
-    CONTAINER_ID     INT            NOT NULL,
-    DepositTimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    DepositAmount    DECIMAL(14, 2) NOT NULL,
-    FOREIGN KEY (ASSOCIATION_ID) REFERENCES "Bucket_Municipality" (ASSOCIATION_ID) ON DELETE CASCADE,
-    FOREIGN KEY (CONTAINER_ID) REFERENCES "Container" (CONTAINER_ID) ON DELETE CASCADE
+    deposit_id       SERIAL PRIMARY KEY,
+    association_id   INT            NOT NULL,
+    container_id     INT            NOT NULL,
+    deposit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deposit_amount    DECIMAL(14, 2) NOT NULL,
+    FOREIGN KEY (association_id) REFERENCES bucket_municipality (association_id) ON DELETE CASCADE,
+    FOREIGN KEY (container_id) REFERENCES container (container_id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Container_Unloading"
+CREATE TABLE container_unloading
 (
-    DISCHARGE_ID       SERIAL PRIMARY KEY,
-    CONTAINER_ID       INT            NOT NULL,
-    USER_ID            INT            NOT NULL,
-    UnloadedQuantity   DECIMAL(14, 2) NOT NULL,
-    UnloadingTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CONTAINER_ID) REFERENCES "Container" (CONTAINER_ID) ON DELETE CASCADE,
-    FOREIGN KEY (USER_ID) REFERENCES "User" (USER_ID) ON DELETE CASCADE
+    discharge_id       SERIAL PRIMARY KEY,
+    container_id       INT            NOT NULL,
+    user_id            INT            NOT NULL,
+    unloaded_quantity   DECIMAL(14, 2) NOT NULL,
+    unloading_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (container_id) REFERENCES container (container_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE CASCADE
 );
