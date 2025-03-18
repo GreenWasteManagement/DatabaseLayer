@@ -6,16 +6,16 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "\"PostalCode\"")
+@Table(name = "postal_code")
 public class PostalCode {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PostalCode_id_gen")
-    @SequenceGenerator(name = "PostalCode_id_gen", sequenceName = "PostalCode_postal_code_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "postal_code_id_gen")
+    @SequenceGenerator(name = "postal_code_id_gen", sequenceName = "postal_code_postal_code_id_seq", allocationSize = 1)
     @Column(name = "postal_code_id", nullable = false)
     private Integer id;
 
-    @Column(name = "postalcode", nullable = false, length = 20)
-    private String postalcode;
+    @Column(name = "postal_code", nullable = false, length = 20)
+    private String postalCode;
 
     @Column(name = "county", nullable = false, length = 100)
     private String county;
@@ -34,12 +34,12 @@ public class PostalCode {
         this.id = id;
     }
 
-    public String getPostalcode() {
-        return postalcode;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public void setPostalcode(String postalcode) {
-        this.postalcode = postalcode;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String getCounty() {

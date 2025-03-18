@@ -2,15 +2,12 @@ package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Entity
-@Table(name = "\"User\"")
+@Table(name = "\"user\"")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_id_gen")
-    @SequenceGenerator(name = "User_id_gen", sequenceName = "User_user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
+    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_user_id_seq", allocationSize = 1)
     @Column(name = "user_id", nullable = false)
     private Integer id;
 
@@ -26,24 +23,18 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phonenumber", length = 16)
-    private String phonenumber;
+    @Column(name = "phone_number", length = 16)
+    private String phoneNumber;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Admin admin;
 
-    @OneToMany(mappedBy = "user")
-    private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
-
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Municipality municipality;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Smas smas;
 
     public Integer getId() {
@@ -86,12 +77,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Address getAddress() {
@@ -110,22 +101,6 @@ public class User {
         this.admin = admin;
     }
 
-    public Set<BucketMunicipality> getBucketMunicipalities() {
-        return bucketMunicipalities;
-    }
-
-    public void setBucketMunicipalities(Set<BucketMunicipality> bucketMunicipalities) {
-        this.bucketMunicipalities = bucketMunicipalities;
-    }
-
-    public Set<ContainerUnloading> getContainerUnloadings() {
-        return containerUnloadings;
-    }
-
-    public void setContainerUnloadings(Set<ContainerUnloading> containerUnloadings) {
-        this.containerUnloadings = containerUnloadings;
-    }
-
     public Municipality getMunicipality() {
         return municipality;
     }
@@ -134,18 +109,30 @@ public class User {
         this.municipality = municipality;
     }
 
-    public Smas getSma() {
+    public Smas getSmas() {
         return smas;
     }
 
-    public void setSma(Smas smas) {
+    public void setSmas(Smas smas) {
         this.smas = smas;
     }
 
-/*
- TODO [Reverse Engineering] create field to map the 'role' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "role", columnDefinition = "user_role not null")
-    private Object role;
-*/
+    public enum UserRole {
+        ADMIN,
+        MUNICIPALITY,
+        SMAS
+    }
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

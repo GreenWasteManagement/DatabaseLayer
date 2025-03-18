@@ -5,7 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "\"Address\"")
+@Table(name = "address")
 public class Address {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -17,14 +17,14 @@ public class Address {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "floordetails")
-    private String floordetails;
+    @Column(name = "floor_details")
+    private String floorDetails;
 
-    @Column(name = "floornumber")
-    private Integer floornumber;
+    @Column(name = "floor_number")
+    private Integer floorNumber;
 
-    @Column(name = "doornumber")
-    private Integer doornumber;
+    @Column(name = "door_number")
+    private Integer doorNumber;
 
     @Column(name = "street")
     private String street;
@@ -50,28 +50,28 @@ public class Address {
         this.user = user;
     }
 
-    public String getFloordetails() {
-        return floordetails;
+    public String getFloorDetails() {
+        return floorDetails;
     }
 
-    public void setFloordetails(String floordetails) {
-        this.floordetails = floordetails;
+    public void setFloorDetails(String floorDetails) {
+        this.floorDetails = floorDetails;
     }
 
-    public Integer getFloornumber() {
-        return floornumber;
+    public Integer getFloorNumber() {
+        return floorNumber;
     }
 
-    public void setFloornumber(Integer floornumber) {
-        this.floornumber = floornumber;
+    public void setFloorNumber(Integer floorNumber) {
+        this.floorNumber = floorNumber;
     }
 
-    public Integer getDoornumber() {
-        return doornumber;
+    public Integer getDoorNumber() {
+        return doorNumber;
     }
 
-    public void setDoornumber(Integer doornumber) {
-        this.doornumber = doornumber;
+    public void setDoorNumber(Integer doorNumber) {
+        this.doorNumber = doorNumber;
     }
 
     public String getStreet() {

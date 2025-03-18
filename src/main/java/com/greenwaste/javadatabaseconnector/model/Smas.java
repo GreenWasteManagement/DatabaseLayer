@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "\"SMAS\"")
+@Table(name = "smas")
 public class Smas {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -20,11 +23,14 @@ public class Smas {
     @Column(name = "\"position\"")
     private String position;
 
-    @Column(name = "employeecode", nullable = false, length = 50)
-    private String employeecode;
+    @Column(name = "employee_code", nullable = false, length = 50)
+    private String employeeCode;
 
-    @Column(name = "citizencardcode", nullable = false, length = 50)
-    private String citizencardcode;
+    @Column(name = "citizen_card_code", nullable = false, length = 50)
+    private String citizenCardCode;
+
+    @OneToMany(mappedBy = "user")
+    private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -50,20 +56,28 @@ public class Smas {
         this.position = position;
     }
 
-    public String getEmployeecode() {
-        return employeecode;
+    public String getEmployeeCode() {
+        return employeeCode;
     }
 
-    public void setEmployeecode(String employeecode) {
-        this.employeecode = employeecode;
+    public void setEmployeeCode(String employeeCode) {
+        this.employeeCode = employeeCode;
     }
 
-    public String getCitizencardcode() {
-        return citizencardcode;
+    public String getCitizenCardCode() {
+        return citizenCardCode;
     }
 
-    public void setCitizencardcode(String citizencardcode) {
-        this.citizencardcode = citizencardcode;
+    public void setCitizenCardCode(String citizenCardCode) {
+        this.citizenCardCode = citizenCardCode;
+    }
+
+    public Set<ContainerUnloading> getContainerUnloadings() {
+        return containerUnloadings;
+    }
+
+    public void setContainerUnloadings(Set<ContainerUnloading> containerUnloadings) {
+        this.containerUnloadings = containerUnloadings;
     }
 
 }

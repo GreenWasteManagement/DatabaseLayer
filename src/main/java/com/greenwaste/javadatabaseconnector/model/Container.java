@@ -8,11 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "\"Container\"")
+@Table(name = "container")
 public class Container {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Container_id_gen")
-    @SequenceGenerator(name = "Container_id_gen", sequenceName = "Container_container_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "container_id_gen")
+    @SequenceGenerator(name = "container_id_gen", sequenceName = "container_container_id_seq", allocationSize = 1)
     @Column(name = "container_id", nullable = false)
     private Integer id;
 
@@ -23,8 +23,8 @@ public class Container {
     private String localization;
 
     @ColumnDefault("0")
-    @Column(name = "currentvolumelevel", precision = 14, scale = 2)
-    private BigDecimal currentvolumelevel;
+    @Column(name = "current_volume_level", precision = 14, scale = 2)
+    private BigDecimal currentVolumeLevel;
 
     @OneToMany(mappedBy = "container")
     private Set<BucketMunicipalityContainer> bucketMunicipalityContainers = new LinkedHashSet<>();
@@ -56,12 +56,12 @@ public class Container {
         this.localization = localization;
     }
 
-    public BigDecimal getCurrentvolumelevel() {
-        return currentvolumelevel;
+    public BigDecimal getCurrentVolumeLevel() {
+        return currentVolumeLevel;
     }
 
-    public void setCurrentvolumelevel(BigDecimal currentvolumelevel) {
-        this.currentvolumelevel = currentvolumelevel;
+    public void setCurrentVolumeLevel(BigDecimal currentVolumeLevel) {
+        this.currentVolumeLevel = currentVolumeLevel;
     }
 
     public Set<BucketMunicipalityContainer> getBucketMunicipalityContainers() {

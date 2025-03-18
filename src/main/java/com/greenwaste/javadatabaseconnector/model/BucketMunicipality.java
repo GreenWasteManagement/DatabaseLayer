@@ -10,18 +10,18 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "\"Bucket_Municipality\"")
+@Table(name = "bucket_municipality")
 public class BucketMunicipality {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Bucket_Municipality_id_gen")
-    @SequenceGenerator(name = "Bucket_Municipality_id_gen", sequenceName = "Bucket_Municipality_association_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_municipality_id_gen")
+    @SequenceGenerator(name = "bucket_municipality_id_gen", sequenceName = "bucket_municipality_association_id_seq", allocationSize = 1)
     @Column(name = "association_id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Municipality user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -29,8 +29,12 @@ public class BucketMunicipality {
     private Bucket bucket;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "timestampofassociation")
-    private Instant timestampofassociation;
+    @Column(name = "timestamp_of_association")
+    private Instant timestampOfAssociation;
+
+    @ColumnDefault("false")
+    @Column(name = "status")
+    private Boolean status;
 
     @OneToMany(mappedBy = "association")
     private Set<BucketMunicipalityContainer> bucketMunicipalityContainers = new LinkedHashSet<>();
@@ -43,11 +47,11 @@ public class BucketMunicipality {
         this.id = id;
     }
 
-    public User getUser() {
+    public Municipality getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Municipality user) {
         this.user = user;
     }
 
@@ -59,12 +63,20 @@ public class BucketMunicipality {
         this.bucket = bucket;
     }
 
-    public Instant getTimestampofassociation() {
-        return timestampofassociation;
+    public Instant getTimestampOfAssociation() {
+        return timestampOfAssociation;
     }
 
-    public void setTimestampofassociation(Instant timestampofassociation) {
-        this.timestampofassociation = timestampofassociation;
+    public void setTimestampOfAssociation(Instant timestampOfAssociation) {
+        this.timestampOfAssociation = timestampOfAssociation;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public Set<BucketMunicipalityContainer> getBucketMunicipalityContainers() {
@@ -75,10 +87,4 @@ public class BucketMunicipality {
         this.bucketMunicipalityContainers = bucketMunicipalityContainers;
     }
 
-/*
- TODO [Reverse Engineering] create field to map the 'status' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "status", columnDefinition = "association_status not null")
-    private Object status;
-*/
 }

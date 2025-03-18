@@ -8,11 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "\"Bucket\"")
+@Table(name = "bucket")
 public class Bucket {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Bucket_id_gen")
-    @SequenceGenerator(name = "Bucket_id_gen", sequenceName = "Bucket_bucket_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_id_gen")
+    @SequenceGenerator(name = "bucket_id_gen", sequenceName = "bucket_bucket_id_seq", allocationSize = 1)
     @Column(name = "bucket_id", nullable = false)
     private Integer id;
 
@@ -20,8 +20,8 @@ public class Bucket {
     private BigDecimal capacity;
 
     @ColumnDefault("false")
-    @Column(name = "isassociated")
-    private Boolean isassociated;
+    @Column(name = "is_associated")
+    private Boolean isAssociated;
 
     @OneToMany(mappedBy = "bucket")
     private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
@@ -42,12 +42,12 @@ public class Bucket {
         this.capacity = capacity;
     }
 
-    public Boolean getIsassociated() {
-        return isassociated;
+    public Boolean getIsAssociated() {
+        return isAssociated;
     }
 
-    public void setIsassociated(Boolean isassociated) {
-        this.isassociated = isassociated;
+    public void setIsAssociated(Boolean isAssociated) {
+        this.isAssociated = isAssociated;
     }
 
     public Set<BucketMunicipality> getBucketMunicipalities() {

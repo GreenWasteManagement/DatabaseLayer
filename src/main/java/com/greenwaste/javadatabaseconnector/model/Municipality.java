@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "\"Municipality\"")
+@Table(name = "municipality")
 public class Municipality {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -17,11 +20,14 @@ public class Municipality {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "citizencardcode", nullable = false, length = 50)
-    private String citizencardcode;
+    @Column(name = "citizen_card_code", nullable = false, length = 50)
+    private String citizenCardCode;
 
     @Column(name = "nif", nullable = false, length = 9)
     private String nif;
+
+    @OneToMany(mappedBy = "user")
+    private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -39,12 +45,12 @@ public class Municipality {
         this.user = user;
     }
 
-    public String getCitizencardcode() {
-        return citizencardcode;
+    public String getCitizenCardCode() {
+        return citizenCardCode;
     }
 
-    public void setCitizencardcode(String citizencardcode) {
-        this.citizencardcode = citizencardcode;
+    public void setCitizenCardCode(String citizenCardCode) {
+        this.citizenCardCode = citizenCardCode;
     }
 
     public String getNif() {
@@ -53,6 +59,14 @@ public class Municipality {
 
     public void setNif(String nif) {
         this.nif = nif;
+    }
+
+    public Set<BucketMunicipality> getBucketMunicipalities() {
+        return bucketMunicipalities;
+    }
+
+    public void setBucketMunicipalities(Set<BucketMunicipality> bucketMunicipalities) {
+        this.bucketMunicipalities = bucketMunicipalities;
     }
 
 }

@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "\"Container_Unloading\"")
+@Table(name = "container_unloading")
 public class ContainerUnloading {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Container_Unloading_id_gen")
-    @SequenceGenerator(name = "Container_Unloading_id_gen", sequenceName = "Container_Unloading_discharge_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "container_unloading_id_gen")
+    @SequenceGenerator(name = "container_unloading_id_gen", sequenceName = "container_unloading_discharge_id_seq", allocationSize = 1)
     @Column(name = "discharge_id", nullable = false)
     private Integer id;
 
@@ -25,14 +25,14 @@ public class ContainerUnloading {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Smas user;
 
-    @Column(name = "unloadedquantity", nullable = false, precision = 14, scale = 2)
-    private BigDecimal unloadedquantity;
+    @Column(name = "unloaded_quantity", nullable = false, precision = 14, scale = 2)
+    private BigDecimal unloadedQuantity;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "unloadingtimestamp")
-    private Instant unloadingtimestamp;
+    @Column(name = "unloading_timestamp")
+    private Instant unloadingTimestamp;
 
     public Integer getId() {
         return id;
@@ -50,28 +50,28 @@ public class ContainerUnloading {
         this.container = container;
     }
 
-    public User getUser() {
+    public Smas getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Smas user) {
         this.user = user;
     }
 
-    public BigDecimal getUnloadedquantity() {
-        return unloadedquantity;
+    public BigDecimal getUnloadedQuantity() {
+        return unloadedQuantity;
     }
 
-    public void setUnloadedquantity(BigDecimal unloadedquantity) {
-        this.unloadedquantity = unloadedquantity;
+    public void setUnloadedQuantity(BigDecimal unloadedQuantity) {
+        this.unloadedQuantity = unloadedQuantity;
     }
 
-    public Instant getUnloadingtimestamp() {
-        return unloadingtimestamp;
+    public Instant getUnloadingTimestamp() {
+        return unloadingTimestamp;
     }
 
-    public void setUnloadingtimestamp(Instant unloadingtimestamp) {
-        this.unloadingtimestamp = unloadingtimestamp;
+    public void setUnloadingTimestamp(Instant unloadingTimestamp) {
+        this.unloadingTimestamp = unloadingTimestamp;
     }
 
 }

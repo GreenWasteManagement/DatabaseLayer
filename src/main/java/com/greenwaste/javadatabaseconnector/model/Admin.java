@@ -5,7 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "\"Admin\"")
+@Table(name = "admin")
 public class Admin {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -17,8 +17,8 @@ public class Admin {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "citizencardcode", nullable = false, length = 50)
-    private String citizencardcode;
+    @Column(name = "citizen_card_code", nullable = false, length = 50)
+    private String citizenCardCode;
 
     public Integer getId() {
         return id;
@@ -36,12 +36,12 @@ public class Admin {
         this.user = user;
     }
 
-    public String getCitizencardcode() {
-        return citizencardcode;
+    public String getCitizenCardCode() {
+        return citizenCardCode;
     }
 
-    public void setCitizencardcode(String citizencardcode) {
-        this.citizencardcode = citizencardcode;
+    public void setCitizenCardCode(String citizenCardCode) {
+        this.citizenCardCode = citizenCardCode;
     }
 
 }

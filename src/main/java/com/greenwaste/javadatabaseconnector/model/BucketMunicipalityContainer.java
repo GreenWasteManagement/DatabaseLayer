@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "\"Bucket_Municipality_Container\"")
+@Table(name = "bucket_municipality_container")
 public class BucketMunicipalityContainer {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Bucket_Municipality_Container_id_gen")
-    @SequenceGenerator(name = "Bucket_Municipality_Container_id_gen", sequenceName = "Bucket_Municipality_Container_deposit_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_municipality_container_id_gen")
+    @SequenceGenerator(name = "bucket_municipality_container_id_gen", sequenceName = "bucket_municipality_container_deposit_id_seq", allocationSize = 1)
     @Column(name = "deposit_id", nullable = false)
     private Integer id;
 
@@ -28,11 +28,11 @@ public class BucketMunicipalityContainer {
     private Container container;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "deposittimestamp")
-    private Instant deposittimestamp;
+    @Column(name = "deposit_timestamp")
+    private Instant depositTimestamp;
 
-    @Column(name = "depositamount", nullable = false, precision = 14, scale = 2)
-    private BigDecimal depositamount;
+    @Column(name = "deposit_amount", nullable = false, precision = 14, scale = 2)
+    private BigDecimal depositAmount;
 
     public Integer getId() {
         return id;
@@ -58,20 +58,20 @@ public class BucketMunicipalityContainer {
         this.container = container;
     }
 
-    public Instant getDeposittimestamp() {
-        return deposittimestamp;
+    public Instant getDepositTimestamp() {
+        return depositTimestamp;
     }
 
-    public void setDeposittimestamp(Instant deposittimestamp) {
-        this.deposittimestamp = deposittimestamp;
+    public void setDepositTimestamp(Instant depositTimestamp) {
+        this.depositTimestamp = depositTimestamp;
     }
 
-    public BigDecimal getDepositamount() {
-        return depositamount;
+    public BigDecimal getDepositAmount() {
+        return depositAmount;
     }
 
-    public void setDepositamount(BigDecimal depositamount) {
-        this.depositamount = depositamount;
+    public void setDepositAmount(BigDecimal depositAmount) {
+        this.depositAmount = depositAmount;
     }
 
 }
