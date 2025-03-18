@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @SpringBootApplication
 public class JavaDatabaseConnectorApplication {
@@ -146,6 +147,7 @@ public class JavaDatabaseConnectorApplication {
             unloading.setContainer(container);
             unloading.setUser(smas);
             unloading.setUnloadedQuantity(BigDecimal.valueOf(150.00));
+            unloading.setUnloadingTimestamp(Instant.now());
             containerUnloadingService.createUnloading(unloading);
 
             System.out.println("Dados de teste criados com sucesso!");
