@@ -15,7 +15,7 @@ public class ContainerUnloading {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "container_unloading_id_gen")
     @SequenceGenerator(name = "container_unloading_id_gen", sequenceName = "container_unloading_discharge_id_seq", allocationSize = 1)
     @Column(name = "discharge_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -34,11 +34,11 @@ public class ContainerUnloading {
     @Column(name = "unloading_timestamp")
     private Instant unloadingTimestamp;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

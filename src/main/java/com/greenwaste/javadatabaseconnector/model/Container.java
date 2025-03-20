@@ -14,7 +14,7 @@ public class Container {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "container_id_gen")
     @SequenceGenerator(name = "container_id_gen", sequenceName = "container_container_id_seq", allocationSize = 1)
     @Column(name = "container_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "capacity", nullable = false, precision = 14, scale = 2)
     private BigDecimal capacity;
@@ -32,11 +32,11 @@ public class Container {
     @OneToMany(mappedBy = "container")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -12,7 +12,7 @@ public class PostalCode {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "postal_code_id_gen")
     @SequenceGenerator(name = "postal_code_id_gen", sequenceName = "postal_code_postal_code_id_seq", allocationSize = 1)
     @Column(name = "postal_code_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "postal_code", nullable = false, length = 20)
     private String postalCode;
@@ -26,11 +26,11 @@ public class PostalCode {
     @OneToMany(mappedBy = "postalCode")
     private Set<Address> addresses = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

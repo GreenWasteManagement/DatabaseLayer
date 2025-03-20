@@ -14,7 +14,7 @@ public class Bucket {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_id_gen")
     @SequenceGenerator(name = "bucket_id_gen", sequenceName = "bucket_bucket_id_seq", allocationSize = 1)
     @Column(name = "bucket_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "capacity", nullable = false, precision = 14, scale = 2)
     private BigDecimal capacity;
@@ -26,11 +26,11 @@ public class Bucket {
     @OneToMany(mappedBy = "bucket")
     private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

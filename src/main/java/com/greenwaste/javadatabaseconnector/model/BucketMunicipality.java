@@ -16,7 +16,7 @@ public class BucketMunicipality {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_municipality_id_gen")
     @SequenceGenerator(name = "bucket_municipality_id_gen", sequenceName = "bucket_municipality_association_id_seq", allocationSize = 1)
     @Column(name = "association_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -39,11 +39,11 @@ public class BucketMunicipality {
     @OneToMany(mappedBy = "association")
     private Set<BucketMunicipalityContainer> bucketMunicipalityContainers = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

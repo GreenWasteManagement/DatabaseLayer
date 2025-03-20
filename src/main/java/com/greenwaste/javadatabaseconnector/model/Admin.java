@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Admin {
     @Id
     @Column(name = "user_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,11 +20,11 @@ public class Admin {
     @Column(name = "citizen_card_code", nullable = false, length = 50)
     private String citizenCardCode;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

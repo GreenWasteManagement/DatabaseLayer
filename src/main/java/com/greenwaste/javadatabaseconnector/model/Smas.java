@@ -12,7 +12,7 @@ import java.util.Set;
 public class Smas {
     @Id
     @Column(name = "user_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -32,11 +32,11 @@ public class Smas {
     @OneToMany(mappedBy = "user")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

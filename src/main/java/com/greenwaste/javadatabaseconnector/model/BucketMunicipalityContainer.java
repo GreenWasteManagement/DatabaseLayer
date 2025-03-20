@@ -15,7 +15,7 @@ public class BucketMunicipalityContainer {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bucket_municipality_container_id_gen")
     @SequenceGenerator(name = "bucket_municipality_container_id_gen", sequenceName = "bucket_municipality_container_deposit_id_seq", allocationSize = 1)
     @Column(name = "deposit_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -34,11 +34,11 @@ public class BucketMunicipalityContainer {
     @Column(name = "deposit_amount", nullable = false, precision = 14, scale = 2)
     private BigDecimal depositAmount;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

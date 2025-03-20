@@ -9,7 +9,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
     @SequenceGenerator(name = "user_id_gen", sequenceName = "user_user_id_seq", allocationSize = 1)
     @Column(name = "user_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,11 +37,11 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Smas smas;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

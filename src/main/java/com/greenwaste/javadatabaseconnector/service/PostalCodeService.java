@@ -43,4 +43,6 @@ public class PostalCodeService {
     public void deletePostalCode(Long id) {
         postalCodeRepository.deleteById(id);
     }
+
+
 }
