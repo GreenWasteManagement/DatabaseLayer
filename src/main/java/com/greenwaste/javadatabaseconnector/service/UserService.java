@@ -28,21 +28,6 @@ public class UserService {
     }
 
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    @Transactional
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
-
-
-
     // Begin of methods Cluster of many tables
     // Missing validation of postal code being equal or create a new one if not exists.
 

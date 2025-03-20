@@ -1,11 +1,9 @@
 package com.greenwaste.javadatabaseconnector.service;
 
-import com.greenwaste.javadatabaseconnector.model.Container;
-import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
-import com.greenwaste.javadatabaseconnector.model.PostalCode;
-import com.greenwaste.javadatabaseconnector.model.Smas;
+import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.repository.ContainerRepository;
 import com.greenwaste.javadatabaseconnector.repository.ContainerUnloadingRepository;
+import com.greenwaste.javadatabaseconnector.repository.MunicipalityRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,22 +24,15 @@ public class ContainerService {
         this.containerUnloadingRepository = containerUnloadingRepository;
     }
 
-    public List<Container> getAllContainers() {
-        return containerRepository.findAll();
-    }
-
-    public Optional<Container> getContainerById(Container container) {
-        return containerRepository.findById(container.getId());
-    }
-
     @Transactional
     public Container createContainer(Container container) {
         return containerRepository.save(container);
     }
 
+
     @Transactional
     public void updateContainer(Container updatedContainer) {
-        Optional<Container> existingOpt = getContainerById(updatedContainer);
+        Optional<Container> existingOpt = containerRepository.findById(updatedContainer.getId());
         if (existingOpt.isPresent()) {
             Container existing = existingOpt.get();
             if (updatedContainer.getCapacity() != null && !updatedContainer.getCapacity().equals(existing.getCapacity())) {
@@ -82,7 +73,5 @@ public class ContainerService {
 
 
         }
-
-
     }
 }

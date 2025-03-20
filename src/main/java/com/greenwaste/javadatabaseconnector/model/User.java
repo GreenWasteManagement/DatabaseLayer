@@ -117,22 +117,21 @@ public class User {
         this.smas = smas;
     }
 
-    public enum UserRole {
+    public enum user_role {
         ADMIN,
         MUNICIPALITY,
         SMAS
     }
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
+    private user_role role;
 
-    public UserRole getRole() {
+    public user_role getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(user_role role) {
         this.role = role;
     }
 }

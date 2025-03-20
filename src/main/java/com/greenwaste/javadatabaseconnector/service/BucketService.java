@@ -30,13 +30,6 @@ public class BucketService {
         this.containerRepository = containerRepository;
     }
 
-    public List<Bucket> getAllBuckets() {
-        return bucketRepository.findAll();
-    }
-
-    public Bucket getBucketById(Long id) {
-        return bucketRepository.findById(id).orElse(null);
-    }
 
     @Transactional
     public Bucket createBucket(Bucket bucket) {
@@ -63,6 +56,7 @@ public class BucketService {
     public void deleteBucket(Long id) {
         bucketRepository.deleteById(id);
     }
+
 
     // Cria a associação entre Bucket e Municipality
     @Transactional

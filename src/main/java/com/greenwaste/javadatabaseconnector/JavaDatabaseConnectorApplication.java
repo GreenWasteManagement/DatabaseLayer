@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector;
 
+import com.greenwaste.javadatabaseconnector.databaseseed.DatabaseSeed;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.*;
 import org.springframework.boot.CommandLineRunner;
@@ -22,16 +23,12 @@ public class JavaDatabaseConnectorApplication {
     CommandLineRunner run(ApplicationContext context) {
         return args -> {
             UserService userService = context.getBean(UserService.class);
-            PostalCodeService postalCodeService = context.getBean(PostalCodeService.class);
-            AddressService addressService = context.getBean(AddressService.class);
-            AdminService adminService = context.getBean(AdminService.class);
-            SmasService SmasService = context.getBean(SmasService.class);
-            MunicipalityService municipalityService = context.getBean(MunicipalityService.class);
             BucketService bucketService = context.getBean(BucketService.class);
             ContainerService containerService = context.getBean(ContainerService.class);
-            BucketMunicipalityService bucketMunicipalityService = context.getBean(BucketMunicipalityService.class);
-            BucketMunicipalityContainerService bucketMunicipalityContainerService = context.getBean(BucketMunicipalityContainerService.class);
-            ContainerUnloadingService containerUnloadingService = context.getBean(ContainerUnloadingService.class);
+            DatabaseSeed databaseSeed = context.getBean(DatabaseSeed.class);
+
+            //databaseSeed.resetDatabase();
+            //databaseSeed.createDatabase();
 
             PostalCode postalCode1 = new PostalCode();
             postalCode1.setPostalCode("99999-678");
@@ -57,7 +54,7 @@ public class JavaDatabaseConnectorApplication {
             adminUser.setPassword("password");
             adminUser.setEmail("alice.admin@example.com");
             adminUser.setPhoneNumber("111111111");
-            adminUser.setRole(User.UserRole.ADMIN);
+            adminUser.setRole(User.user_role.ADMIN);
 
             Address adminAddress = new Address();
             adminAddress.setFloorDetails("1st Floor");
@@ -79,7 +76,7 @@ public class JavaDatabaseConnectorApplication {
             smasUser.setPassword("password");
             smasUser.setEmail("bob.smas@example.com");
             smasUser.setPhoneNumber("222222222");
-            smasUser.setRole(User.UserRole.SMAS);
+            smasUser.setRole(User.user_role.SMAS);
 
             Address smasAddress = new Address();
             smasAddress.setFloorDetails("2nd Floor");
@@ -105,7 +102,7 @@ public class JavaDatabaseConnectorApplication {
             municipalityUser.setPassword("password");
             municipalityUser.setEmail("charlie.municipality@example.com");
             municipalityUser.setPhoneNumber("333333333");
-            municipalityUser.setRole(User.UserRole.MUNICIPALITY);
+            municipalityUser.setRole(User.user_role.MUNICIPALITY);
 
             Address municipalityAddress = new Address();
             municipalityAddress.setFloorDetails("3rd Floor");
@@ -138,8 +135,7 @@ public class JavaDatabaseConnectorApplication {
             Container theContainer = containerService.createContainer(container);
 
 
-
-            bucketService.createBucketAssociation(bucket, theMunicipality);
+            bucketService.createBucketAssociation(theBucket, theMunicipality);
 
 
             bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(20));
