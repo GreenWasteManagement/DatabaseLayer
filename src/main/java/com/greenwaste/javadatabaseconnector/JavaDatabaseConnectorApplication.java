@@ -95,6 +95,9 @@ public class JavaDatabaseConnectorApplication {
 
             Smas theSmasUser = userService.createSmas(smasUser, smas, smasAddress, postalCode2);
 
+            theSmasUser.setCitizenCardCode("SMAS9999999999999999999999");
+
+            userService.updateSmas(theSmasUser);
 
             User municipalityUser = new User();
             municipalityUser.setName("Charlie Municipality");
