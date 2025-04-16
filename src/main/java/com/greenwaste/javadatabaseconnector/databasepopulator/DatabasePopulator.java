@@ -5,9 +5,6 @@ import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
 import com.greenwaste.javadatabaseconnector.service.ContainerService;
 import com.greenwaste.javadatabaseconnector.service.UserService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

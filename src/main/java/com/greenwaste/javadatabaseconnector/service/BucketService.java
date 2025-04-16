@@ -1,10 +1,12 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.GetBucketMunicipalityDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.repository.BucketMunicipalityContainerRepository;
 import com.greenwaste.javadatabaseconnector.repository.BucketMunicipalityRepository;
 import com.greenwaste.javadatabaseconnector.repository.BucketRepository;
 import com.greenwaste.javadatabaseconnector.repository.ContainerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,17 @@ public class BucketService {
         this.containerRepository = containerRepository;
     }
 
+    @Transactional(readOnly = true)
+    public Bucket getBucketById(Long id) {
+        return bucketRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Bucket not found with id: " + id));
+
+    }
+
+    @Transactional(readOnly = true)
+    public List<Bucket> getAllBuckets() {
+        return bucketRepository.findAll();
+    }
 
     @Transactional
     public Bucket createBucket(Bucket bucket) {
@@ -58,7 +71,84 @@ public class BucketService {
     }
 
 
-    // Cria a associação entre Bucket e Municipality
+    @Transactional
+    public void createDeposit(Municipality municipalityDeposit, Container containerDeposit, BigDecimal depositAmount) {
+        Optional<BucketMunicipality> bucketAssociationOpt = bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
+
+        if (bucketAssociationOpt.isPresent()) {
+
+            BucketMunicipality bucketAssociation = bucketAssociationOpt.get();
+            Bucket bucket = bucketAssociation.getBucket();
+
+            if (depositAmount.compareTo(bucket.getCapacity()) <= 0) {
+
+                BigDecimal novoVolume = containerDeposit.getCurrentVolumeLevel().add(depositAmount);
+                if (novoVolume.compareTo(containerDeposit.getCapacity()) <= 0) {
+
+                    BucketMunicipalityContainer deposit = new BucketMunicipalityContainer();
+                    deposit.setAssociation(bucketAssociation);
+                    deposit.setContainer(containerDeposit);
+                    deposit.setDepositAmount(depositAmount);
+                    deposit.setDepositTimestamp(Instant.now());
+                    bucketMunicipalityContainerRepository.save(deposit);
+
+                    containerDeposit.setCurrentVolumeLevel(novoVolume);
+                    containerRepository.save(containerDeposit);
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /*
+     * Bucket Municipality Part
+     */
+
+    public GetBucketMunicipalityDTO convertToDTO(BucketMunicipality bucketMunicipality) {
+        return new GetBucketMunicipalityDTO(
+                bucketMunicipality.getId(),
+                bucketMunicipality.getBucket().getId(),
+                bucketMunicipality.getUser().getId(),
+                bucketMunicipality.getTimestampOfAssociation(),
+                bucketMunicipality.getStatus()
+        );
+    }
+
+    public List<GetBucketMunicipalityDTO> convertToDTOList(List<BucketMunicipality> bucketMunicipalityList) {
+        return bucketMunicipalityList.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BucketMunicipality> getAllBucketMunicipalities() {
+        return bucketMunicipalityRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<BucketMunicipality> getBucketMunicipalityById(Long id) {
+        return bucketMunicipalityRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BucketMunicipality> getBucketMunicipalitiesByUserIdAndStatus(Long userId, Boolean status) {
+        return bucketMunicipalityRepository.findByUserIdAndStatus(userId, status);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BucketMunicipality> getBucketMunicipalitiesByBucketIdAndStatus(Long bucketId, Boolean status) {
+        return bucketMunicipalityRepository.findByBucketIdAndStatus(bucketId, status);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<BucketMunicipality> getFirstByUserAndStatusTrue(Municipality user) {
+        return bucketMunicipalityRepository.findFirstByUserAndStatusTrue(user);
+    }
+
     @Transactional
     public void createBucketAssociation(Bucket bucketToAssociate, Municipality municipalityToAssociate) {
 
@@ -99,35 +189,4 @@ public class BucketService {
 
     }
 
-    @Transactional
-    public void createDeposit(Municipality municipalityDeposit, Container containerDeposit, BigDecimal depositAmount) {
-        Optional<BucketMunicipality> bucketAssociationOpt = bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
-
-        if (bucketAssociationOpt.isPresent()) {
-
-            BucketMunicipality bucketAssociation = bucketAssociationOpt.get();
-            Bucket bucket = bucketAssociation.getBucket();
-
-            if (depositAmount.compareTo(bucket.getCapacity()) <= 0) {
-
-                BigDecimal novoVolume = containerDeposit.getCurrentVolumeLevel().add(depositAmount);
-                if (novoVolume.compareTo(containerDeposit.getCapacity()) <= 0) {
-
-                    BucketMunicipalityContainer deposit = new BucketMunicipalityContainer();
-                    deposit.setAssociation(bucketAssociation);
-                    deposit.setContainer(containerDeposit);
-                    deposit.setDepositAmount(depositAmount);
-                    deposit.setDepositTimestamp(Instant.now());
-                    bucketMunicipalityContainerRepository.save(deposit);
-
-                    containerDeposit.setCurrentVolumeLevel(novoVolume);
-                    containerRepository.save(containerDeposit);
-
-                }
-
-            }
-
-        }
-
-    }
 }
