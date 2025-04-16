@@ -3,13 +3,7 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.*;
 import com.greenwaste.javadatabaseconnector.model.Bucket;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
-import com.greenwaste.javadatabaseconnector.model.Container;
-import com.greenwaste.javadatabaseconnector.model.Municipality;
-import com.greenwaste.javadatabaseconnector.repository.BucketRepository;
-import com.greenwaste.javadatabaseconnector.repository.ContainerRepository;
-import com.greenwaste.javadatabaseconnector.repository.MunicipalityRepository;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +15,9 @@ import java.util.List;
 public class BucketWebController {
 
     private final BucketService bucketService;
-    private final BucketRepository bucketRepository;
-    private final MunicipalityRepository municipalityRepository;
-    private final ContainerRepository containerRepository;
 
-    public BucketWebController(BucketService bucketService,
-                               BucketRepository bucketRepository,
-                               MunicipalityRepository municipalityRepository,
-                               ContainerRepository containerRepository) {
+    public BucketWebController(BucketService bucketService) {
         this.bucketService = bucketService;
-        this.bucketRepository = bucketRepository;
-        this.municipalityRepository = municipalityRepository;
-        this.containerRepository = containerRepository;
     }
 
     // ---------------------- BUCKETS CRUD ----------------------
@@ -82,12 +67,7 @@ public class BucketWebController {
 
     @PostMapping("/{bucketId}/associate/municipality/{municipalityId}")
     public ResponseEntity<Void> associateBucketToMunicipality(@PathVariable Long bucketId, @PathVariable Long municipalityId) {
-        Bucket bucket = bucketRepository.findById(bucketId)
-                .orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
-        Municipality municipality = municipalityRepository.findById(municipalityId)
-                .orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
-
-        bucketService.createBucketAssociation(bucket, municipality);
+        bucketService.createBucketAssociationByIds(bucketId, municipalityId);
         return ResponseEntity.ok().build();
     }
 
@@ -116,12 +96,7 @@ public class BucketWebController {
 
     @PostMapping("/associations")
     public ResponseEntity<Void> createAssociation(@Valid @RequestBody CreateBucketAssociationDTO dto) {
-        Bucket bucket = bucketRepository.findById(dto.getBucketId())
-                .orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
-        Municipality municipality = municipalityRepository.findById(dto.getMunicipalityId())
-                .orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
-
-        bucketService.createBucketAssociation(bucket, municipality);
+        bucketService.createBucketAssociationByIds(dto.getBucketId(), dto.getMunicipalityId());
         return ResponseEntity.ok().build();
     }
 
@@ -129,12 +104,7 @@ public class BucketWebController {
 
     @PostMapping("/deposit")
     public ResponseEntity<Void> createDeposit(@Valid @RequestBody CreateDepositDTO dto) {
-        Municipality municipality = municipalityRepository.findById(dto.getMunicipalityId())
-                .orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
-        Container container = containerRepository.findById(dto.getContainerId())
-                .orElseThrow(() -> new EntityNotFoundException("Container not found"));
-
-        bucketService.createDeposit(municipality, container, dto.getDepositAmount());
+        bucketService.createDepositByIds(dto.getMunicipalityId(), dto.getContainerId(), dto.getDepositAmount());
         return ResponseEntity.ok().build();
     }
 }

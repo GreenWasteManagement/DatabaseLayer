@@ -5,17 +5,17 @@ import java.time.Instant;
 public class GetBucketMunicipalityDTO {
     private Long associationId;
     private Long bucketId;
-    private Long municipalityId;
+    private Long userId;
     private Instant timestampOfAssociation;
     private Boolean status;
 
     public GetBucketMunicipalityDTO() {}
 
-    public GetBucketMunicipalityDTO(Long associationId, Long bucketId, Long municipalityId,
+    public GetBucketMunicipalityDTO(Long associationId, Long bucketId, Long userId,
                                     Instant timestampOfAssociation, Boolean status) {
         this.associationId = associationId;
         this.bucketId = bucketId;
-        this.municipalityId = municipalityId;
+        this.userId = userId;
         this.timestampOfAssociation = timestampOfAssociation;
         this.status = status;
     }
@@ -37,12 +37,12 @@ public class GetBucketMunicipalityDTO {
         this.bucketId = bucketId;
     }
 
-    public Long getMunicipalityId() {
-        return municipalityId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setMunicipalityId(Long municipalityId) {
-        this.municipalityId = municipalityId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Instant getTimestampOfAssociation() {
