@@ -4,6 +4,8 @@ import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.*;
 import com.greenwaste.javadatabaseconnector.model.Bucket;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.annotation.AuthRole;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ public class BucketWebController {
         return ResponseEntity.ok(dto);
     }
 
+    @AuthRole(role = Authorization.UserRolePermission.ADMIN)
     @GetMapping
     public ResponseEntity<List<GetBucketDTO>> getAllBuckets() {
         List<Bucket> buckets = bucketService.getAllBuckets();
