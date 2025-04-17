@@ -31,7 +31,7 @@ public class BucketWebController {
         return ResponseEntity.ok(dto);
     }
 
-    @AuthRole(role = Authorization.UserRolePermission.ADMIN)
+    @AuthRole(role = Authorization.UserRolePermission.SMAS)
     @GetMapping
     public ResponseEntity<List<GetBucketDTO>> getAllBuckets() {
         List<Bucket> buckets = bucketService.getAllBuckets();
