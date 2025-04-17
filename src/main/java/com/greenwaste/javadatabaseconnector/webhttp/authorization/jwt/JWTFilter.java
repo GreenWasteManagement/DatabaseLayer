@@ -40,8 +40,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String token = request.getHeader("Authorization");
 
-        //Only Debug
-        System.out.println("JWT_SECRET: " + getSecretKey(secretKey));
 
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
