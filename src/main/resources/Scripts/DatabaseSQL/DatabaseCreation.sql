@@ -11,7 +11,7 @@ COMMIT;
 
 BEGIN;
 
-CREATE TABLE green_waste_management."user"
+CREATE TABLE IF NOT EXISTS green_waste_management."user"
 (
     user_id      SERIAL PRIMARY KEY,
     name         VARCHAR(255)        NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE green_waste_management."user"
     role         user_role           NOT NULL
 );
 
-CREATE TABLE green_waste_management.postal_code
+CREATE TABLE IF NOT EXISTS green_waste_management.postal_code
 (
     postal_code_id SERIAL PRIMARY KEY,
     postal_code    VARCHAR(20)  NOT NULL UNIQUE,
@@ -30,7 +30,7 @@ CREATE TABLE green_waste_management.postal_code
     district       VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE green_waste_management.address
+CREATE TABLE IF NOT EXISTS green_waste_management.address
 (
     user_id        INT PRIMARY KEY,
     floor_details  VARCHAR(255),
@@ -42,14 +42,14 @@ CREATE TABLE green_waste_management.address
     FOREIGN KEY (postal_code_id) REFERENCES green_waste_management.postal_code (postal_code_id) ON DELETE RESTRICT
 );
 
-CREATE TABLE green_waste_management.admin
+CREATE TABLE IF NOT EXISTS green_waste_management.admin
 (
     user_id           INT PRIMARY KEY,
     citizen_card_code VARCHAR(50) UNIQUE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES green_waste_management."user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE green_waste_management.smas
+CREATE TABLE IF NOT EXISTS green_waste_management.smas
 (
     user_id           INT PRIMARY KEY,
     position          VARCHAR(255),
@@ -58,7 +58,7 @@ CREATE TABLE green_waste_management.smas
     FOREIGN KEY (user_id) REFERENCES green_waste_management."user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE green_waste_management.municipality
+CREATE TABLE IF NOT EXISTS green_waste_management.municipality
 (
     user_id           INT PRIMARY KEY,
     citizen_card_code VARCHAR(50) UNIQUE NOT NULL,
@@ -66,14 +66,14 @@ CREATE TABLE green_waste_management.municipality
     FOREIGN KEY (user_id) REFERENCES green_waste_management."user" (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE green_waste_management.bucket
+CREATE TABLE IF NOT EXISTS green_waste_management.bucket
 (
     bucket_id     SERIAL PRIMARY KEY,
     capacity      DECIMAL(14, 2) NOT NULL,
     is_associated BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE green_waste_management.container
+CREATE TABLE IF NOT EXISTS green_waste_management.container
 (
     container_id         SERIAL PRIMARY KEY,
     capacity             DECIMAL(14, 2) NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE green_waste_management.container
     current_volume_level DECIMAL(14, 2) DEFAULT 0
 );
 
-CREATE TABLE green_waste_management.bucket_municipality
+CREATE TABLE IF NOT EXISTS green_waste_management.bucket_municipality
 (
     association_id           SERIAL PRIMARY KEY,
     user_id                  INT NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE green_waste_management.bucket_municipality
     FOREIGN KEY (bucket_id) REFERENCES green_waste_management.bucket (bucket_id) ON DELETE CASCADE
 );
 
-CREATE TABLE green_waste_management.bucket_municipality_container
+CREATE TABLE IF NOT EXISTS green_waste_management.bucket_municipality_container
 (
     deposit_id        SERIAL PRIMARY KEY,
     association_id    INT            NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE green_waste_management.bucket_municipality_container
     FOREIGN KEY (container_id) REFERENCES green_waste_management.container (container_id) ON DELETE CASCADE
 );
 
-CREATE TABLE green_waste_management.container_unloading
+CREATE TABLE IF NOT EXISTS green_waste_management.container_unloading
 (
     discharge_id        SERIAL PRIMARY KEY,
     container_id        INT            NOT NULL,

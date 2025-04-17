@@ -15,6 +15,8 @@ public class Authorization {
 
         public static UserRolePermission fromString(String userRole) {
             try {
+                //Just For debug
+                System.out.println(userRole);
                 return UserRolePermission.valueOf(userRole.toUpperCase());
             } catch (IllegalArgumentException | NullPointerException e) {
                 return null;
