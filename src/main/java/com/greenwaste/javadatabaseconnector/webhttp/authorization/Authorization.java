@@ -1,11 +1,14 @@
 package com.greenwaste.javadatabaseconnector.webhttp.authorization;
 
+import lombok.Getter;
+
 public class Authorization {
 
+    @Getter
     public enum UserRolePermission {
         ADMIN(1),
-        MUNICIPALITY(2),
-        SMAS(3);
+        SMAS(2),
+        MUNICIPALITY(3);
 
         private final int level;
 
@@ -15,16 +18,11 @@ public class Authorization {
 
         public static UserRolePermission fromString(String userRole) {
             try {
-                //Just For debug
                 System.out.println(userRole);
                 return UserRolePermission.valueOf(userRole.toUpperCase());
             } catch (IllegalArgumentException | NullPointerException e) {
                 return null;
             }
-        }
-
-        public int getLevel() {
-            return level;
         }
 
         public boolean canAccess(UserRolePermission requiredRole) {

@@ -1,6 +1,6 @@
 package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
-import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.*;
+import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older.*;
 import com.greenwaste.javadatabaseconnector.model.Bucket;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
@@ -31,7 +31,7 @@ public class BucketWebController {
         return ResponseEntity.ok(dto);
     }
 
-    @AuthRole(role = Authorization.UserRolePermission.SMAS)
+    //@AuthRole(role = Authorization.UserRolePermission.SMAS)
     @GetMapping
     public ResponseEntity<List<GetBucketDTO>> getAllBuckets() {
         List<Bucket> buckets = bucketService.getAllBuckets();

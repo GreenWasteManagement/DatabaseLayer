@@ -1,6 +1,6 @@
 package com.greenwaste.javadatabaseconnector.service;
 
-import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.GetBucketMunicipalityDTO;
+import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older.GetBucketMunicipalityDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -185,7 +185,6 @@ public class BucketService {
                 .orElseThrow(() -> new EntityNotFoundException("Container not found"));
         createDeposit(municipality, container, depositAmount);
     }
-
 
     public GetBucketMunicipalityDTO convertToDTO(BucketMunicipality entity) {
         return new GetBucketMunicipalityDTO(

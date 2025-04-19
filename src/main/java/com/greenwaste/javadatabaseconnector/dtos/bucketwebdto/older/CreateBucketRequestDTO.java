@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.bucketwebdto;
+package com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

@@ -2,6 +2,7 @@ package com.greenwaste.javadatabaseconnector.service;
 
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -263,6 +264,39 @@ public class UserService {
     @Transactional
     public void deletePostalCode(PostalCode postalCodeToDelete) {
         postalCodeRepository.deleteById(postalCodeToDelete.getId());
+    }
+
+
+    //// Detailed Gets with all necessary Info:
+
+    /**
+     * Admin + User + Address + PostalCode
+     */
+    @Transactional(readOnly = true)
+    public Admin getAdminById(Long id) {
+        return adminRepository
+                .findWithAllDetailsById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
+    }
+
+    /**
+     * SMAS + User + Address + PostalCode
+     */
+    @Transactional(readOnly = true)
+    public Smas getSmasById(Long id) {
+        return smasRepository
+                .findWithAllDetailsById(id)
+                .orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
+    }
+
+    /**
+     * Municipality + User + Address + PostalCode
+     */
+    @Transactional(readOnly = true)
+    public Municipality getMunicipalityById(Long id) {
+        return municipalityRepository
+                .findWithAllDetailsById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
     }
 
 

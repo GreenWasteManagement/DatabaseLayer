@@ -1,12 +1,16 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "bucket")
 public class Bucket {
@@ -25,37 +29,5 @@ public class Bucket {
 
     @OneToMany(mappedBy = "bucket")
     private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(BigDecimal capacity) {
-        this.capacity = capacity;
-    }
-
-    public Boolean getIsAssociated() {
-        return isAssociated;
-    }
-
-    public void setIsAssociated(Boolean isAssociated) {
-        this.isAssociated = isAssociated;
-    }
-
-    public Set<BucketMunicipality> getBucketMunicipalities() {
-        return bucketMunicipalities;
-    }
-
-    public void setBucketMunicipalities(Set<BucketMunicipality> bucketMunicipalities) {
-        this.bucketMunicipalities = bucketMunicipalities;
-    }
 
 }
