@@ -1,16 +1,13 @@
-package com.greenwaste.javadatabaseconnector.dtos.basedto;
-
+package com.greenwaste.javadatabaseconnector.dtos.base;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MunicipalityDTO {
+public class AdminDTO {
 
     private Long id;
+    private Long userId;
     private String citizenCardCode;
-    private String nif;
-
 }
-

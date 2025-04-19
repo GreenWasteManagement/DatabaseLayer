@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.repository;
+package com.greenwaste.javadatabaseconnector.service.repository;
 
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.model.Municipality;

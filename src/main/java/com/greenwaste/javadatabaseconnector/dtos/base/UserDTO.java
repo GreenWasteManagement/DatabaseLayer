@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.basedto;
+package com.greenwaste.javadatabaseconnector.dtos.base;
 
 import com.greenwaste.javadatabaseconnector.model.User.user_role;
 import lombok.Getter;

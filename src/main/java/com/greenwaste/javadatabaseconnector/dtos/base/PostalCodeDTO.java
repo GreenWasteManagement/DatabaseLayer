@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.basedto;
+package com.greenwaste.javadatabaseconnector.dtos.base;
 
 import lombok.Getter;
 import lombok.Setter;

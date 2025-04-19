@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.basedto;
+package com.greenwaste.javadatabaseconnector.dtos.base;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,16 +8,10 @@ import lombok.Setter;
 public class AddressDTO {
 
     private Long id;
-
     private Long userId;
-
     private String floorDetails;
-
     private Integer floorNumber;
-
     private Integer doorNumber;
-
     private String street;
-
     private Long postalCodeId;
 }

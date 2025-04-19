@@ -6,8 +6,8 @@ import com.greenwaste.javadatabaseconnector.dtos.containerwebdto.CreateContainer
 import com.greenwaste.javadatabaseconnector.dtos.containerwebdto.UpdateContainerRequestDTO;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.Smas;
-import com.greenwaste.javadatabaseconnector.repository.ContainerRepository;
-import com.greenwaste.javadatabaseconnector.repository.SmasRepository;
+import com.greenwaste.javadatabaseconnector.service.repository.ContainerRepository;
+import com.greenwaste.javadatabaseconnector.service.repository.SmasRepository;
 import com.greenwaste.javadatabaseconnector.service.ContainerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

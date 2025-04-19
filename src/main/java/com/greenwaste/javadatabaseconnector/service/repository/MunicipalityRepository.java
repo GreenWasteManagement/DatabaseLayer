@@ -1,20 +1,20 @@
-package com.greenwaste.javadatabaseconnector.repository;
+package com.greenwaste.javadatabaseconnector.service.repository;
 
-import com.greenwaste.javadatabaseconnector.model.Admin;
+import com.greenwaste.javadatabaseconnector.model.Municipality;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AdminRepository extends JpaRepository<Admin, Long> {
+public interface MunicipalityRepository extends JpaRepository<Municipality, Long> {
 
     @EntityGraph(attributePaths = {
             "user",
             "user.address",
             "user.address.postalCode"
     })
-    Optional<Admin> findWithAllDetailsById(Long id);
+    Optional<Municipality> findWithAllDetailsById(Long id);
 
 
 }
