@@ -1,6 +1,8 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -9,6 +11,8 @@ import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "bucket_municipality")
 public class BucketMunicipality {
@@ -38,53 +42,5 @@ public class BucketMunicipality {
 
     @OneToMany(mappedBy = "association")
     private Set<BucketMunicipalityContainer> bucketMunicipalityContainers = new LinkedHashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Municipality getUser() {
-        return user;
-    }
-
-    public void setUser(Municipality user) {
-        this.user = user;
-    }
-
-    public Bucket getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(Bucket bucket) {
-        this.bucket = bucket;
-    }
-
-    public Instant getTimestampOfAssociation() {
-        return timestampOfAssociation;
-    }
-
-    public void setTimestampOfAssociation(Instant timestampOfAssociation) {
-        this.timestampOfAssociation = timestampOfAssociation;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public Set<BucketMunicipalityContainer> getBucketMunicipalityContainers() {
-        return bucketMunicipalityContainers;
-    }
-
-    public void setBucketMunicipalityContainers(Set<BucketMunicipalityContainer> bucketMunicipalityContainers) {
-        this.bucketMunicipalityContainers = bucketMunicipalityContainers;
-    }
 
 }

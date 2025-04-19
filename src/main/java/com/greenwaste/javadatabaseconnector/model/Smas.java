@@ -1,12 +1,16 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "smas")
 public class Smas {
@@ -31,53 +35,5 @@ public class Smas {
 
     @OneToMany(mappedBy = "user")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getEmployeeCode() {
-        return employeeCode;
-    }
-
-    public void setEmployeeCode(String employeeCode) {
-        this.employeeCode = employeeCode;
-    }
-
-    public String getCitizenCardCode() {
-        return citizenCardCode;
-    }
-
-    public void setCitizenCardCode(String citizenCardCode) {
-        this.citizenCardCode = citizenCardCode;
-    }
-
-    public Set<ContainerUnloading> getContainerUnloadings() {
-        return containerUnloadings;
-    }
-
-    public void setContainerUnloadings(Set<ContainerUnloading> containerUnloadings) {
-        this.containerUnloadings = containerUnloadings;
-    }
 
 }

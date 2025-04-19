@@ -1,12 +1,16 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "municipality")
 public class Municipality {
@@ -28,45 +32,5 @@ public class Municipality {
 
     @OneToMany(mappedBy = "user")
     private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getCitizenCardCode() {
-        return citizenCardCode;
-    }
-
-    public void setCitizenCardCode(String citizenCardCode) {
-        this.citizenCardCode = citizenCardCode;
-    }
-
-    public String getNif() {
-        return nif;
-    }
-
-    public void setNif(String nif) {
-        this.nif = nif;
-    }
-
-    public Set<BucketMunicipality> getBucketMunicipalities() {
-        return bucketMunicipalities;
-    }
-
-    public void setBucketMunicipalities(Set<BucketMunicipality> bucketMunicipalities) {
-        this.bucketMunicipalities = bucketMunicipalities;
-    }
 
 }

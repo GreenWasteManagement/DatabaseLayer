@@ -1,9 +1,13 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "address")
 public class Address {
@@ -33,61 +37,5 @@ public class Address {
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "postal_code_id", nullable = false)
     private PostalCode postalCode;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getFloorDetails() {
-        return floorDetails;
-    }
-
-    public void setFloorDetails(String floorDetails) {
-        this.floorDetails = floorDetails;
-    }
-
-    public Integer getFloorNumber() {
-        return floorNumber;
-    }
-
-    public void setFloorNumber(Integer floorNumber) {
-        this.floorNumber = floorNumber;
-    }
-
-    public Integer getDoorNumber() {
-        return doorNumber;
-    }
-
-    public void setDoorNumber(Integer doorNumber) {
-        this.doorNumber = doorNumber;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public PostalCode getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(PostalCode postalCode) {
-        this.postalCode = postalCode;
-    }
 
 }

@@ -1,6 +1,8 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -8,6 +10,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "container_unloading")
 public class ContainerUnloading {
@@ -33,45 +37,5 @@ public class ContainerUnloading {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "unloading_timestamp")
     private Instant unloadingTimestamp;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Container getContainer() {
-        return container;
-    }
-
-    public void setContainer(Container container) {
-        this.container = container;
-    }
-
-    public Smas getUser() {
-        return user;
-    }
-
-    public void setUser(Smas user) {
-        this.user = user;
-    }
-
-    public BigDecimal getUnloadedQuantity() {
-        return unloadedQuantity;
-    }
-
-    public void setUnloadedQuantity(BigDecimal unloadedQuantity) {
-        this.unloadedQuantity = unloadedQuantity;
-    }
-
-    public Instant getUnloadingTimestamp() {
-        return unloadingTimestamp;
-    }
-
-    public void setUnloadingTimestamp(Instant unloadingTimestamp) {
-        this.unloadingTimestamp = unloadingTimestamp;
-    }
 
 }

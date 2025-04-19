@@ -1,12 +1,16 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "container")
 public class Container {
@@ -31,53 +35,5 @@ public class Container {
 
     @OneToMany(mappedBy = "container")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(BigDecimal capacity) {
-        this.capacity = capacity;
-    }
-
-    public String getLocalization() {
-        return localization;
-    }
-
-    public void setLocalization(String localization) {
-        this.localization = localization;
-    }
-
-    public BigDecimal getCurrentVolumeLevel() {
-        return currentVolumeLevel;
-    }
-
-    public void setCurrentVolumeLevel(BigDecimal currentVolumeLevel) {
-        this.currentVolumeLevel = currentVolumeLevel;
-    }
-
-    public Set<BucketMunicipalityContainer> getBucketMunicipalityContainers() {
-        return bucketMunicipalityContainers;
-    }
-
-    public void setBucketMunicipalityContainers(Set<BucketMunicipalityContainer> bucketMunicipalityContainers) {
-        this.bucketMunicipalityContainers = bucketMunicipalityContainers;
-    }
-
-    public Set<ContainerUnloading> getContainerUnloadings() {
-        return containerUnloadings;
-    }
-
-    public void setContainerUnloadings(Set<ContainerUnloading> containerUnloadings) {
-        this.containerUnloadings = containerUnloadings;
-    }
 
 }

@@ -1,6 +1,8 @@
 package com.greenwaste.javadatabaseconnector.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -8,6 +10,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "bucket_municipality_container")
 public class BucketMunicipalityContainer {
@@ -33,45 +37,5 @@ public class BucketMunicipalityContainer {
 
     @Column(name = "deposit_amount", nullable = false, precision = 14, scale = 2)
     private BigDecimal depositAmount;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BucketMunicipality getAssociation() {
-        return association;
-    }
-
-    public void setAssociation(BucketMunicipality association) {
-        this.association = association;
-    }
-
-    public Container getContainer() {
-        return container;
-    }
-
-    public void setContainer(Container container) {
-        this.container = container;
-    }
-
-    public Instant getDepositTimestamp() {
-        return depositTimestamp;
-    }
-
-    public void setDepositTimestamp(Instant depositTimestamp) {
-        this.depositTimestamp = depositTimestamp;
-    }
-
-    public BigDecimal getDepositAmount() {
-        return depositAmount;
-    }
-
-    public void setDepositAmount(BigDecimal depositAmount) {
-        this.depositAmount = depositAmount;
-    }
 
 }
