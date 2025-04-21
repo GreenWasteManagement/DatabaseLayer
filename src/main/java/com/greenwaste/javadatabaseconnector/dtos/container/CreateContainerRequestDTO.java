@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.bucketwebdto;
+package com.greenwaste.javadatabaseconnector.dtos.container;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BucketDTO {
-    private Long id;
+public class CreateContainerRequestDTO {
     private BigDecimal capacity;
-    private Boolean isAssociated;
+    private BigDecimal currentVolumeLevel;
 }

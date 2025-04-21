@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older;
+package com.greenwaste.javadatabaseconnector.dtos.older.bucketwebdto.older;
 
 
 import jakarta.validation.constraints.NotNull;

@@ -1,52 +1,59 @@
 package com.greenwaste.javadatabaseconnector.mapper;
 
-
 import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
-import com.greenwaste.javadatabaseconnector.dtos.base.ContainerUnloadingDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.SmasDTO;
+import com.greenwaste.javadatabaseconnector.dtos.container.*;
+import com.greenwaste.javadatabaseconnector.dtos.older.containerwebdto.UpdateContainerRequestDTO;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.model.Smas;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface ContainerDTOMapper {
+
+    ContainerDTOMapper INSTANCE = Mappers.getMapper(ContainerDTOMapper.class);
+
+    // BASE CONVERSÕES
 
     ContainerDTO toContainerDTO(Container container);
 
     SmasDTO toSmasDTO(Smas smas);
 
-    ContainerUnloadingDTO toContainerUnloadingDTO(ContainerUnloading unloading);
+    // REQUESTS
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "currentVolumeLevel", constant = "0")
-    Container fromCreateContainerDTO(ContainerDTO dto);
+    Container toContainer(CreateContainerRequestDTO dto);
 
-    @Mapping(target = "currentVolumeLevel", source = "currentVolumeLevel")
-    @Mapping(target = "localization", source = "localization")
-    @Mapping(target = "capacity", source = "capacity")
-    Container fromUpdateContainerDTO(ContainerDTO dto);
 
-    default Map<String, Object> mapToContainerDTO(Container container) {
-        ContainerDTO dto = toContainerDTO(container);
-        boolean isFull = container.getCurrentVolumeLevel().compareTo(container.getCapacity()) >= 0;
-        return Map.of("container", dto, "isFull", isFull);
-    }
+    // RESPONSE COMPOSTOS
 
-    /**
-     * Mapeia lista de Containers para um Map dinâmico contendo a lista e total
-     */
-    default Map<String, Object> mapToContainerListDTO(List<Container> list) {
-        List<ContainerDTO> dtos = list.stream().map(this::toContainerDTO).toList();
-        return Map.of("containers", dtos, "total", dtos.size());
-    }
+    @Mapping(source = "container", target = "container")
+    CreateContainerResponseDTO toCreateContainerResponseDTO(Container container);
 
-    default Map<String, Object> mapToUnloadingDTO(ContainerUnloading unloading) {
-        return Map.of("unloading", toContainerUnloadingDTO(unloading));
-    }
+    @Mapping(source = "container", target = "container")
+    GetContainerByIdResponseDTO toGetContainerByIdResponseDTO(Container container);
+
+    @Mapping(source = "containerList", target = "containers")
+    GetAllContainersResponseDTO toGetAllContainersResponseDTO(List<Container> containerList);
+
+    // UNLOADING
+
+    @Mapping(source = "user", target = "user")
+    @Mapping(source = "container", target = "container")
+    ContainerUnloadingResponseDTO toContainerUnloadingResponseDTO(ContainerUnloading unloading);
+
+    // UPDATE
+
+    @Mapping(target = "id", source = "container.id")
+    @Mapping(target = "capacity", source = "container.capacity")
+    @Mapping(target = "localization", source = "container.localization")
+    @Mapping(target = "currentVolumeLevel", source = "container.currentVolumeLevel")
+    Container toContainer(UpdateContainerRequestDTO dto);
+
+    Container toContainer(ContainerDTO container);
 }
-

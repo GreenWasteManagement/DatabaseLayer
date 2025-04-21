@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.containerwebdto;
+package com.greenwaste.javadatabaseconnector.dtos.older.containerwebdto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
