@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.service;
 
-import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older.GetBucketMunicipalityDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,10 +20,7 @@ public class BucketService {
     private final ContainerRepository containerRepository;
     private final MunicipalityRepository municipalityRepository;
 
-    public BucketService(BucketRepository bucketRepository,
-                         BucketMunicipalityRepository bucketMunicipalityRepository,
-                         BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository,
-                         ContainerRepository containerRepository, MunicipalityRepository municipalityRepository) {
+    public BucketService(BucketRepository bucketRepository, BucketMunicipalityRepository bucketMunicipalityRepository, BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository, ContainerRepository containerRepository, MunicipalityRepository municipalityRepository) {
         this.bucketRepository = bucketRepository;
         this.bucketMunicipalityRepository = bucketMunicipalityRepository;
         this.bucketMunicipalityContainerRepository = bucketMunicipalityContainerRepository;
@@ -37,8 +33,7 @@ public class BucketService {
      */
     @Transactional(readOnly = true)
     public Bucket getBucketById(Long id) {
-        return bucketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Bucket not found with id: " + id));
+        return bucketRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bucket not found with id: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -58,13 +53,11 @@ public class BucketService {
         if (existingBucketOpt.isPresent()) {
             Bucket existingBucket = existingBucketOpt.get();
 
-            if (updatedBucket.getCapacity() != null &&
-                    !updatedBucket.getCapacity().equals(existingBucket.getCapacity())) {
+            if (updatedBucket.getCapacity() != null && !updatedBucket.getCapacity().equals(existingBucket.getCapacity())) {
                 existingBucket.setCapacity(updatedBucket.getCapacity());
             }
 
-            if (updatedBucket.getIsAssociated() != null &&
-                    !updatedBucket.getIsAssociated().equals(existingBucket.getIsAssociated())) {
+            if (updatedBucket.getIsAssociated() != null && !updatedBucket.getIsAssociated().equals(existingBucket.getIsAssociated())) {
                 existingBucket.setIsAssociated(updatedBucket.getIsAssociated());
             }
 
@@ -82,8 +75,7 @@ public class BucketService {
      */
     @Transactional
     public void createDeposit(Municipality municipalityDeposit, Container containerDeposit, BigDecimal depositAmount) {
-        Optional<BucketMunicipality> bucketAssociationOpt =
-                bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
+        Optional<BucketMunicipality> bucketAssociationOpt = bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
 
         if (bucketAssociationOpt.isPresent()) {
             BucketMunicipality bucketAssociation = bucketAssociationOpt.get();
@@ -138,18 +130,18 @@ public class BucketService {
         return bucketMunicipalityRepository.findFirstByUserAndStatusTrue(user);
     }
 
-    @Transactional
-    public void createBucketAssociation(Bucket bucketToAssociate, Municipality municipalityToAssociate) {
-        Long bucketId = bucketToAssociate.getId();
 
-        List<BucketMunicipality> activeBuckets =
-                bucketMunicipalityRepository.findByBucketIdAndStatus(bucketId, true);
+    @Transactional
+    public void createBucketAssociation(Long bucketId, Long municipalityId) {
+        Bucket bucket = bucketRepository.findById(bucketId).orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
+        Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
+
+        List<BucketMunicipality> activeBuckets = bucketMunicipalityRepository.findByBucketIdAndStatus(bucketId, true);
 
         if (activeBuckets.isEmpty()) {
-            Long userId = municipalityToAssociate.getId();
+            Long userId = municipality.getId();
 
-            List<BucketMunicipality> activeAssociationsOfUser =
-                    bucketMunicipalityRepository.findByUserIdAndStatus(userId, Boolean.TRUE);
+            List<BucketMunicipality> activeAssociationsOfUser = bucketMunicipalityRepository.findByUserIdAndStatus(userId, Boolean.TRUE);
 
             for (BucketMunicipality association : activeAssociationsOfUser) {
                 association.setStatus(Boolean.FALSE);
@@ -157,34 +149,86 @@ public class BucketService {
             }
 
             BucketMunicipality newBucketAssociation = new BucketMunicipality();
-            newBucketAssociation.setBucket(bucketToAssociate);
-            newBucketAssociation.setUser(municipalityToAssociate);
+            newBucketAssociation.setBucket(bucket);
+            newBucketAssociation.setUser(municipality);
             newBucketAssociation.setTimestampOfAssociation(Instant.now());
             newBucketAssociation.setStatus(Boolean.TRUE);
             bucketMunicipalityRepository.save(newBucketAssociation);
 
-            bucketToAssociate.setIsAssociated(Boolean.TRUE);
-            bucketRepository.save(bucketToAssociate);
+            bucket.setIsAssociated(Boolean.TRUE);
+            bucketRepository.save(bucket);
         }
-    }
 
-    @Transactional
-    public void createBucketAssociationByIds(Long bucketId, Long municipalityId) {
-        Bucket bucket = bucketRepository.findById(bucketId)
-                .orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
-        Municipality municipality = municipalityRepository.findById(municipalityId)
-                .orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
-        createBucketAssociation(bucket, municipality);
     }
 
     @Transactional
     public void createDepositByIds(Long municipalityId, Long containerId, BigDecimal depositAmount) {
+        Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
+        Container container = containerRepository.findById(containerId).orElseThrow(() -> new EntityNotFoundException("Container not found"));
+        createDeposit(municipality, container, depositAmount);
+    }
+
+    @Transactional
+    public BucketMunicipality createBucketAssociationAndGet(Long bucketId, Long municipalityId) {
+        Bucket bucket = bucketRepository.findById(bucketId).orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
+        Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
+
+        // desativa antigas…
+        bucketMunicipalityRepository.findByUserIdAndStatus(municipalityId, true).forEach(a -> {
+            a.setStatus(false);
+            bucketMunicipalityRepository.save(a);
+        });
+
+        // cria nova
+        BucketMunicipality newAssoc = new BucketMunicipality();
+        newAssoc.setBucket(bucket);
+        newAssoc.setUser(municipality);
+        newAssoc.setTimestampOfAssociation(Instant.now());
+        newAssoc.setStatus(true);
+        bucketMunicipalityRepository.save(newAssoc);
+
+        bucket.setIsAssociated(true);
+        bucketRepository.save(bucket);
+
+        return newAssoc;
+    }
+
+
+/*
+ @Transactional
+    public BucketMunicipalityContainer createDepositAndGet(Long municipalityId, Long containerId, BigDecimal amount) {
         Municipality municipality = municipalityRepository.findById(municipalityId)
                 .orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
         Container container = containerRepository.findById(containerId)
                 .orElseThrow(() -> new EntityNotFoundException("Container not found"));
-        createDeposit(municipality, container, depositAmount);
+
+        BucketMunicipality assoc = bucketMunicipalityRepository
+                .findFirstByUserAndStatusTrue(municipality)
+                .orElseThrow(() -> new EntityNotFoundException("Active bucket association not found"));
+
+        // valida e cria
+        if (amount.compareTo(assoc.getBucket().getCapacity()) > 0) {
+            throw new IllegalArgumentException("Deposit exceeds bucket capacity");
+        }
+        BigDecimal newLevel = container.getCurrentVolumeLevel().add(amount);
+        if (newLevel.compareTo(container.getCapacity()) > 0) {
+            throw new IllegalArgumentException("Deposit exceeds container capacity");
+        }
+
+        BucketMunicipalityContainer deposit = new BucketMunicipalityContainer();
+        deposit.setAssociation(assoc);
+        deposit.setContainer(container);
+        deposit.setDepositAmount(amount);
+        deposit.setDepositTimestamp(Instant.now());
+        bucketMunicipalityContainerRepository.save(deposit);
+
+        container.setCurrentVolumeLevel(newLevel);
+        containerRepository.save(container);
+
+        return deposit;
     }
+
+
 
     public GetBucketMunicipalityDTO convertToDTO(BucketMunicipality entity) {
         return new GetBucketMunicipalityDTO(
@@ -201,4 +245,6 @@ public class BucketService {
                 .map(this::convertToDTO)
                 .toList();
     }
+
+ */
 }

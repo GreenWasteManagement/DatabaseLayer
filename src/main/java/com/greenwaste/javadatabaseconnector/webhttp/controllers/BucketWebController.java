@@ -1,113 +1,124 @@
 package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
-import com.greenwaste.javadatabaseconnector.dtos.bucketwebdto.older.*;
-import com.greenwaste.javadatabaseconnector.model.Bucket;
+import com.greenwaste.javadatabaseconnector.dtos.bucket.request.*;
+import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
+import com.greenwaste.javadatabaseconnector.mapper.BucketDTOMapper;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
-import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization;
-import com.greenwaste.javadatabaseconnector.webhttp.authorization.annotation.AuthRole;
-import jakarta.validation.Valid;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/buckets")
 public class BucketWebController {
 
     private final BucketService bucketService;
+    private final BucketDTOMapper bucketDTOMapper;
 
-    public BucketWebController(BucketService bucketService) {
+    public BucketWebController(BucketService bucketService, BucketDTOMapper bucketDTOMapper) {
         this.bucketService = bucketService;
+        this.bucketDTOMapper = bucketDTOMapper;
     }
 
-    // ---------------------- BUCKETS CRUD ----------------------
-
     @GetMapping("/{id}")
-    public ResponseEntity<GetBucketDTO> getBucketById(@PathVariable Long id) {
-        Bucket bucket = bucketService.getBucketById(id);
-        GetBucketDTO dto = new GetBucketDTO(bucket.getId(), bucket.getCapacity(), bucket.getIsAssociated());
+    public ResponseEntity<GetBucketByIdResponseDTO> getBucketById(@RequestBody GetBucketByIdRequestDTO requestDTO) {
+        var bucket = bucketService.getBucketById(requestDTO.getId());
+        var responseDTO = bucketDTOMapper.toGetBucketByIdResponseDTO(bucket);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping()
+    public ResponseEntity<GetAllBucketsResponseDTO> getAllBuckets() {
+        var buckets = bucketService.getAllBuckets();
+        var responseDTO = bucketDTOMapper.toGetAllBucketsResponseDTO(buckets);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<CreateBucketResponseDTO> createBucket(@RequestBody CreateBucketRequestDTO requestDTO) {
+        var bucket = bucketService.createBucket(bucketDTOMapper.toBucket(requestDTO));
+        var responseDTO = bucketDTOMapper.toCreateBucketResponseDTO(bucket);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UpdateBucketResponseDTO> updateBucket(@RequestBody UpdateBucketRequestDTO requestDTO) {
+        bucketService.updateBucket(bucketDTOMapper.toBucket(requestDTO));
+        return ResponseEntity.ok(new UpdateBucketResponseDTO("Bucket updated successfully"));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<DeleteBucketResponseDTO> deleteBucket(@RequestBody DeleteBucketRequestDTO requestDTO) {
+        bucketService.deleteBucket(requestDTO.getId());
+        return ResponseEntity.ok(new DeleteBucketResponseDTO("Bucket deleted successfully"));
+    }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<CreateDepositResponseDTO> createDeposit(@RequestBody CreateDepositRequestDTO requestDTO) {
+        var municipality = bucketDTOMapper.toMunicipality(requestDTO.getMunicipality());
+        var container = bucketDTOMapper.toContainer(requestDTO.getContainer());
+
+        bucketService.createDeposit(municipality, container, requestDTO.getDepositAmount());
+
+        return ResponseEntity.ok(new CreateDepositResponseDTO(Instant.now()));
+    }
+
+    @GetMapping("/buckets-municipalities")
+    public ResponseEntity<GetAllBucketMunicipalitiesResponseDTO> getAll() {
+        var entities = bucketService.getAllBucketMunicipalities();
+        var dto = new GetAllBucketMunicipalitiesResponseDTO(bucketDTOMapper.toDTOList(entities));
         return ResponseEntity.ok(dto);
     }
 
-    //@AuthRole(role = Authorization.UserRolePermission.SMAS)
-    @GetMapping
-    public ResponseEntity<List<GetBucketDTO>> getAllBuckets() {
-        List<Bucket> buckets = bucketService.getAllBuckets();
-        List<GetBucketDTO> dtoList = buckets.stream()
-                .map(b -> new GetBucketDTO(b.getId(), b.getCapacity(), b.getIsAssociated()))
-                .toList();
-        return ResponseEntity.ok(dtoList);
+    @PostMapping("/buckets-municipalities/by-id")
+    public ResponseEntity<GetBucketMunicipalityByIdResponseDTO> getById(@RequestBody GetBucketMunicipalityByIdRequestDTO request) {
+        var entity = bucketService.getBucketMunicipalityById(request.getId()).orElseThrow(() -> new EntityNotFoundException("Not found"));
+        var dto = new GetBucketMunicipalityByIdResponseDTO(bucketDTOMapper.toDTO(entity));
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/buckets-municipalities/by-user")
+    public ResponseEntity<GetBucketMunicipalitiesByUserIdAndStatusResponseDTO> getByUserAndStatus(@RequestBody GetBucketMunicipalitiesByUserIdAndStatusRequestDTO request) {
+        var list = bucketService.getBucketMunicipalitiesByUserIdAndStatus(request.getUserId(), request.getStatus());
+        var dto = new GetBucketMunicipalitiesByUserIdAndStatusResponseDTO(bucketDTOMapper.toDTOList(list));
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/buckets-municipalities/by-bucket")
+    public ResponseEntity<GetBucketMunicipalitiesByBucketIdAndStatusResponseDTO> getByBucketAndStatus(@RequestBody GetBucketMunicipalitiesByBucketIdAndStatusRequestDTO request) {
+        var list = bucketService.getBucketMunicipalitiesByBucketIdAndStatus(request.getBucketId(), request.getStatus());
+        var dto = new GetBucketMunicipalitiesByBucketIdAndStatusResponseDTO(bucketDTOMapper.toDTOList(list));
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/buckets-municipalities/first-active-by-user")
+    public ResponseEntity<GetFirstBucketMunicipalityByUserAndStatusTrueResponseDTO> getFirstByUserAndTrue(@RequestBody GetFirstBucketMunicipalityByUserAndStatusTrueRequestDTO request) {
+        var municipality = bucketDTOMapper.toEntity(request.getMunicipality());
+        var entity = bucketService.getFirstByUserAndStatusTrue(municipality).orElseThrow(() -> new EntityNotFoundException("No active association"));
+        var dto = new GetFirstBucketMunicipalityByUserAndStatusTrueResponseDTO(bucketDTOMapper.toDTO(entity));
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<Bucket> createBucket(@Valid @RequestBody CreateBucketRequestDTO dto) {
-        Bucket bucket = new Bucket();
-        bucket.setCapacity(dto.getCapacity());
-        bucket.setIsAssociated(false);
-        Bucket savedBucket = bucketService.createBucket(bucket);
-        return ResponseEntity.ok(savedBucket);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateBucket(@PathVariable Long id, @Valid @RequestBody UpdateBucketRequestDTO dto) {
-        Bucket bucket = new Bucket();
-        bucket.setId(id);
-        bucket.setCapacity(dto.getCapacity());
-        bucket.setIsAssociated(dto.getIsAssociated());
-        bucketService.updateBucket(bucket);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBucket(@PathVariable Long id) {
-        bucketService.deleteBucket(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // ---------------------- ASSOCIATIONS BETWEEN MUNICIPALITY AND BUCKETS ----------------------
-
-    @PostMapping("/{bucketId}/associate/municipality/{municipalityId}")
-    public ResponseEntity<Void> associateBucketToMunicipality(@PathVariable Long bucketId, @PathVariable Long municipalityId) {
-        bucketService.createBucketAssociationByIds(bucketId, municipalityId);
+    public ResponseEntity<Void> createAssociation(@RequestBody CreateBucketAssociationRequestDTO dto) {
+        bucketService.createBucketAssociation(dto.getBucketId(), dto.getMunicipalityId());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/associations")
-    public ResponseEntity<List<GetBucketMunicipalityDTO>> getAllAssociations() {
-        List<BucketMunicipality> all = bucketService.getAllBucketMunicipalities();
-        return ResponseEntity.ok(bucketService.convertToDTOList(all));
+    @PostMapping("/with-response")
+    public ResponseEntity<CreateBucketAssociationResponseDTO> createAndReturn(@RequestBody CreateBucketAssociationRequestDTO dto) {
+        BucketMunicipality result = bucketService.createBucketAssociationAndGet(dto.getBucketId(), dto.getMunicipalityId());
+        return ResponseEntity.ok(bucketDTOMapper.toCreateBucketAssociationResponseDTO(result));
     }
-
-    @GetMapping("/associations/{associationId}")
-    public ResponseEntity<GetBucketMunicipalityDTO> getAssociationById(@PathVariable Long associationId) {
-        return bucketService.getBucketMunicipalityById(associationId)
-                .map(bucketService::convertToDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/users/{userId}/associations")
-    public ResponseEntity<List<GetBucketMunicipalityDTO>> getAssociationsByUserAndStatus(
-            @PathVariable Long userId,
-            @RequestParam Boolean status
-    ) {
-        List<BucketMunicipality> list = bucketService.getBucketMunicipalitiesByUserIdAndStatus(userId, status);
-        return ResponseEntity.ok(bucketService.convertToDTOList(list));
-    }
-
-    @PostMapping("/associations")
-    public ResponseEntity<Void> createAssociation(@Valid @RequestBody CreateBucketAssociationDTO dto) {
-        bucketService.createBucketAssociationByIds(dto.getBucketId(), dto.getMunicipalityId());
-        return ResponseEntity.ok().build();
-    }
-
-    // ---------------------- DEPOSIT ----------------------
 
     @PostMapping("/deposit")
-    public ResponseEntity<Void> createDeposit(@Valid @RequestBody CreateDepositDTO dto) {
+    public ResponseEntity<Void> createDeposit(@RequestBody CreateDepositByIdsRequestDTO dto) {
         bucketService.createDepositByIds(dto.getMunicipalityId(), dto.getContainerId(), dto.getDepositAmount());
         return ResponseEntity.ok().build();
     }
+
 }

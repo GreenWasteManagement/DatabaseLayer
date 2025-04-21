@@ -1,68 +1,69 @@
 package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
 
-import com.greenwaste.javadatabaseconnector.dtos.containerwebdto.ContainerUnloadingRequestDTO;
-import com.greenwaste.javadatabaseconnector.dtos.containerwebdto.CreateContainerRequestDTO;
-import com.greenwaste.javadatabaseconnector.dtos.containerwebdto.UpdateContainerRequestDTO;
+import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
+import com.greenwaste.javadatabaseconnector.mapper.ContainerDTOMapper;
 import com.greenwaste.javadatabaseconnector.model.Container;
-import com.greenwaste.javadatabaseconnector.model.Smas;
-import com.greenwaste.javadatabaseconnector.service.repository.ContainerRepository;
-import com.greenwaste.javadatabaseconnector.service.repository.SmasRepository;
+import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.service.ContainerService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/containers")
 public class ContainerWebController {
 
     private final ContainerService containerService;
-    private final ContainerRepository containerRepository;
-    private final SmasRepository smasRepository;
+    private final ContainerDTOMapper containerMapper;
 
-    public ContainerWebController(ContainerService containerService,
-                                  ContainerRepository containerRepository,
-                                  SmasRepository smasRepository) {
+    public ContainerWebController(ContainerService containerService, @Qualifier("containerDTOMapperImpl") ContainerDTOMapper containerMapper) {
         this.containerService = containerService;
-        this.containerRepository = containerRepository;
-        this.smasRepository = smasRepository;
+        this.containerMapper = containerMapper;
+    }
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAll() {
+        return ResponseEntity.ok(containerMapper.mapToContainerListDTO(containerService.getAllContainers()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(containerMapper.mapToContainerDTO(containerService.getContainerById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Container> createContainer(@Valid @RequestBody CreateContainerRequestDTO dto) {
-        Container container = new Container();
-        container.setCapacity(dto.getCapacity());
-        container.setLocalization(dto.getLocalization());
-        container.setCurrentVolumeLevel(BigDecimal.ZERO);
-        return ResponseEntity.ok(containerService.createContainer(container));
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody ContainerDTO dto) {
+        Container created = containerService.createContainer(containerMapper.fromCreateContainerDTO(dto));
+        return ResponseEntity.ok(containerMapper.mapToContainerDTO(created));
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateContainer(@Valid @RequestBody UpdateContainerRequestDTO dto) {
-        Container container = new Container();
-        container.setId(dto.getId());
-        container.setCapacity(dto.getCapacity());
-        container.setLocalization(dto.getLocalization());
-        container.setCurrentVolumeLevel(dto.getCurrentVolumeLevel());
-        containerService.updateContainer(container);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody ContainerDTO dto) {
+        Container toUpdate = containerMapper.fromUpdateContainerDTO(dto);
+        toUpdate.setId(id);
+        containerService.updateContainer(toUpdate);
+        Container updated = containerService.getContainerById(id);
+        return ResponseEntity.ok(containerMapper.mapToContainerDTO(updated));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainer(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         containerService.deleteContainer(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/unload")
-    public ResponseEntity<Void> containerUnloading(@Valid @RequestBody ContainerUnloadingRequestDTO dto) {
-        Container container = containerService.getContainerById(dto.getContainerId());
-        Smas smas = smasRepository.findById(dto.getSmasId()).orElseThrow();
-        containerService.containerUnloading(smas, container);
-        return ResponseEntity.ok().build();
+    @PostMapping("/{containerId}/unload/{smasId}")
+    public ResponseEntity<Map<String, Object>> unload(
+            @PathVariable Long containerId,
+            @PathVariable Long smasId) {
+        ContainerUnloading u = containerService.containerUnloading(smasId, containerId);
+        return ResponseEntity.ok(containerMapper.mapToUnloadingDTO(u));
     }
 }
 

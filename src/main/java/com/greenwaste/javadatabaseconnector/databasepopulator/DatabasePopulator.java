@@ -139,7 +139,7 @@ public class DatabasePopulator {
         Container theContainer = containerService.createContainer(container);
 
 
-        bucketService.createBucketAssociation(theBucket, theMunicipality);
+        bucketService.createBucketAssociation(theBucket.getId(), theMunicipality.getId());
 
 
         bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(20));
@@ -148,7 +148,7 @@ public class DatabasePopulator {
         bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(100));
         bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(50));
 
-        containerService.containerUnloading(smas, theContainer);
+        containerService.containerUnloading(smas.getId(), theContainer.getId());
 
         System.out.println("Mock Data Testes are successfully completed !");
     }

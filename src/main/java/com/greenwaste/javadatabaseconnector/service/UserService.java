@@ -274,9 +274,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Admin getAdminById(Long id) {
-        return adminRepository
-                .findWithAllDetailsById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
+        return adminRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
     }
 
     /**
@@ -284,9 +282,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Smas getSmasById(Long id) {
-        return smasRepository
-                .findWithAllDetailsById(id)
-                .orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
+        return smasRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
     }
 
     /**
@@ -294,9 +290,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Municipality getMunicipalityById(Long id) {
-        return municipalityRepository
-                .findWithAllDetailsById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
+        return municipalityRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
     }
 
 

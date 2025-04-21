@@ -5,6 +5,7 @@ import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.model.Smas;
 import com.greenwaste.javadatabaseconnector.service.repository.ContainerRepository;
 import com.greenwaste.javadatabaseconnector.service.repository.ContainerUnloadingRepository;
+import com.greenwaste.javadatabaseconnector.service.repository.SmasRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,13 @@ public class ContainerService {
 
     private final ContainerRepository containerRepository;
     private final ContainerUnloadingRepository containerUnloadingRepository;
+    private final SmasRepository smasRepository;
 
     public ContainerService(ContainerRepository containerRepository,
-                            ContainerUnloadingRepository containerUnloadingRepository) {
+                            ContainerUnloadingRepository containerUnloadingRepository, SmasRepository smasRepository) {
         this.containerRepository = containerRepository;
         this.containerUnloadingRepository = containerUnloadingRepository;
+        this.smasRepository = smasRepository;
     }
 
     @Transactional(readOnly = true)
@@ -70,10 +73,14 @@ public class ContainerService {
     }
 
     @Transactional
-    public void containerUnloading(Smas smasUnload, Container containerUnload) {
+    public ContainerUnloading containerUnloading(Long smasId, Long containerId) {
+        Smas smasUnload = smasRepository.findById(smasId)
+                .orElseThrow(() -> new EntityNotFoundException("SMAS não encontrado com ID: " + smasId));
+
+        Container containerUnload = containerRepository.findById(containerId)
+                .orElseThrow(() -> new EntityNotFoundException("Container não encontrado com ID: " + containerId));
 
         if (containerUnload.getCurrentVolumeLevel().compareTo(BigDecimal.ZERO) > 0) {
-
             ContainerUnloading containerUnloaded = new ContainerUnloading();
             containerUnloaded.setUnloadedQuantity(containerUnload.getCurrentVolumeLevel());
             containerUnloaded.setUnloadingTimestamp(Instant.now());
@@ -84,7 +91,8 @@ public class ContainerService {
             containerUnload.setCurrentVolumeLevel(BigDecimal.ZERO);
             containerRepository.save(containerUnload);
 
-
+            return containerUnloaded;
         }
+        return null;
     }
 }
