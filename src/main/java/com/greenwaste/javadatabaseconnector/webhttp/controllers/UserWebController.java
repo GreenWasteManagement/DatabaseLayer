@@ -24,6 +24,12 @@ public class UserWebController {
     private final UserDTOMapper userDTOMapper;
 
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
+        String token = userService.login(request);
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("/create/admin")
     public ResponseEntity<CreateAdminResponseDTO> createAdmin(@RequestBody CreateAdminRequestDTO dto) {
         var user = userDTOMapper.toUser(dto.getUser());
@@ -42,6 +48,12 @@ public class UserWebController {
         var municipality = userDTOMapper.toMunicipality(dto.getMunicipality());
         var address = userDTOMapper.toAddress(dto.getAddress());
         var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+
+
+        System.out.println(user);
+        System.out.println(municipality);
+        System.out.println(address);
+        System.out.println(postalCode.getCounty());
 
         var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
         var responseDTO = new CreateMunicipalityResponseDTO(userDTOMapper.toMunicipalityDTO(savedMunicipality));

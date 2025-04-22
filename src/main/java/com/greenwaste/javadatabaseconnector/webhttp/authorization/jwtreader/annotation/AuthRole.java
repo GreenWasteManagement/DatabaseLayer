@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.webhttp.authorization.annotation;
+package com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.annotation;
 
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization;
 

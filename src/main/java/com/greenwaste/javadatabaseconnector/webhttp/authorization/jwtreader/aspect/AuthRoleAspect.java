@@ -1,8 +1,8 @@
-package com.greenwaste.javadatabaseconnector.webhttp.authorization.aspect;
+package com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.aspect;
 
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization.UserRolePermission;
-import com.greenwaste.javadatabaseconnector.webhttp.authorization.annotation.AuthRole;
-import com.greenwaste.javadatabaseconnector.webhttp.authorization.exceptions.UnauthorizedException;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.annotation.AuthRole;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Component
 public class AuthRoleAspect {
 
-    @Before("@annotation(com.greenwaste.javadatabaseconnector.webhttp.authorization.annotation.AuthRole)")
+    @Before("@annotation(com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.annotation.AuthRole)")
     public void checkRolePermission(JoinPoint joinPoint) throws UnauthorizedException {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();

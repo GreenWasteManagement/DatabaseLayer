@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.webhttp.authorization.jwt;
+package com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.jwt;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;

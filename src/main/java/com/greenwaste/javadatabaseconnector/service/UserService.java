@@ -1,7 +1,12 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.user.request.LoginRequestDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
+import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;
+import com.greenwaste.javadatabaseconnector.service.exceptions.UsernameNotFoundException;
 import com.greenwaste.javadatabaseconnector.service.repository.*;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtcreator.JwtService;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.passwordmanager.BCryptService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +22,18 @@ public class UserService {
     private final MunicipalityRepository municipalityRepository;
     private final AddressRepository addressRepository;
     private final PostalCodeRepository postalCodeRepository;
+    private final BCryptService bcryptService;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository) {
+    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
         this.smasRepository = smasRepository;
         this.municipalityRepository = municipalityRepository;
         this.addressRepository = addressRepository;
         this.postalCodeRepository = postalCodeRepository;
+        this.bcryptService = bcryptService;
+        this.jwtService = jwtService;
     }
 
 
@@ -293,5 +302,15 @@ public class UserService {
         return municipalityRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
     }
 
+
+    public String login(LoginRequestDTO request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
+
+        if (!bcryptService.matches(request.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Senha inválida");
+        }
+
+        return jwtService.generateToken(user);
+    }
 
 }

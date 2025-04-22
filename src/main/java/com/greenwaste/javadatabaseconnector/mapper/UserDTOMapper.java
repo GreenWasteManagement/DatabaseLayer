@@ -1,6 +1,7 @@
 package com.greenwaste.javadatabaseconnector.mapper;
 
 import com.greenwaste.javadatabaseconnector.dtos.base.*;
+import com.greenwaste.javadatabaseconnector.dtos.user.request.LoginRequestDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -44,4 +45,7 @@ public interface UserDTOMapper {
 
     @Mapping(target = "Smas.id", ignore = true)
     Smas toSmas(SmasDTO dto);
+
+    @Mapping(target = "User.password", ignore = true)
+    User toDTO(UserDTO user);
 }

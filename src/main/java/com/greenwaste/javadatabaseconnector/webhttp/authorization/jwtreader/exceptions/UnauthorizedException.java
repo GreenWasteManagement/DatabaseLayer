@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.webhttp.authorization.exceptions;
+package com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.exceptions;
 
 
 public class UnauthorizedException extends RuntimeException {
