@@ -97,7 +97,8 @@ public class BucketWebController {
 
     @PostMapping("/buckets-municipalities/first-active-by-user")
     public ResponseEntity<GetFirstBucketMunicipalityByUserAndStatusTrueResponseDTO> getFirstByUserAndTrue(@RequestBody GetFirstBucketMunicipalityByUserAndStatusTrueRequestDTO request) {
-        var municipality = bucketDTOMapper.toEntity(request.getMunicipality());
+
+        var municipality = bucketDTOMapper.toMunicipality(request.getMunicipality());
         var entity = bucketService.getFirstByUserAndStatusTrue(municipality).orElseThrow(() -> new EntityNotFoundException("No active association"));
         var dto = new GetFirstBucketMunicipalityByUserAndStatusTrueResponseDTO(bucketDTOMapper.toDTO(entity));
         return ResponseEntity.ok(dto);
@@ -115,10 +116,5 @@ public class BucketWebController {
         return ResponseEntity.ok(bucketDTOMapper.toCreateBucketAssociationResponseDTO(result));
     }
 
-    @PostMapping("/deposit")
-    public ResponseEntity<Void> createDeposit(@RequestBody CreateDepositByIdsRequestDTO dto) {
-        bucketService.createDepositByIds(dto.getMunicipalityId(), dto.getContainerId(), dto.getDepositAmount());
-        return ResponseEntity.ok().build();
-    }
 
 }

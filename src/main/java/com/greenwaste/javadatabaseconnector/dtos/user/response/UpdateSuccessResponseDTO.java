@@ -1,10 +1,10 @@
-package com.greenwaste.javadatabaseconnector.dtos.container;
+package com.greenwaste.javadatabaseconnector.dtos.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DeleteContainerResponseDTO {
+public class UpdateSuccessResponseDTO {
     private String message;
 }

@@ -1,12 +1,9 @@
-package com.greenwaste.javadatabaseconnector.dtos.container;
+package com.greenwaste.javadatabaseconnector.dtos.container.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.BucketDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Data
 @Getter

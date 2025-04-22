@@ -23,48 +23,58 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BucketDTOMapper {
 
+    // Instance of the mapper for direct access to mapping methods
     BucketDTOMapper INSTANCE = Mappers.getMapper(BucketDTOMapper.class);
 
+    // Converts a single Bucket entity to a BucketDTO.
     BucketDTO toBucketDTO(Bucket bucket);
 
-    @Mapping(source = "bucket", target = "bucket")
+    // Converts a single Bucket entity to GetBucketByIdResponseDTO.
     GetBucketByIdResponseDTO toGetBucketByIdResponseDTO(Bucket bucket);
 
-
+    // Converts a list of Bucket entities to a list of BucketDTOs.
     List<BucketDTO> toBucketDTOList(List<Bucket> buckets);
 
-    @Mapping(source = "buckets", target = "buckets")
-    GetAllBucketsResponseDTO toGetAllBucketsResponseDTO(List<Bucket> buckets);
+    // Maps the list of Bucket entities to GetAllBucketsResponseDTO by mapping the list to the 'buckets' field.
 
+    /**
+     * Wraps a list of BucketDTOs inside a GetAllBucketsResponseDTO.
+     * This avoids the "iterable to non-iterable" error in MapStruct,
+     * since MapStruct can't directly map List<Bucket> into a wrapper object.
+     */
+    default GetAllBucketsResponseDTO toGetAllBucketsResponseDTO(List<Bucket> buckets) {
+        List<BucketDTO> dtos = toBucketDTOList(buckets);
+        GetAllBucketsResponseDTO response = new GetAllBucketsResponseDTO();
+        response.setBuckets(dtos);
+        return response;
+    }
 
-    // Create
-    @Mapping(source = "bucket", target = "bucket")
+    // Creates a CreateBucketResponseDTO from a Bucket entity.
     CreateBucketResponseDTO toCreateBucketResponseDTO(Bucket bucket);
 
-    @Mapping(target = "id", ignore = true)
+    // Converts CreateBucketRequestDTO to a Bucket entity, ignoring the 'id' field during mapping.
+    @Mapping(target = "Bucket.id", ignore = true)
+    // id field is ignored during object creation
     Bucket toBucket(CreateBucketRequestDTO dto);
 
-    // Update
+    // Converts UpdateBucketRequestDTO to a Bucket entity.
     Bucket toBucket(UpdateBucketRequestDTO dto);
 
-    // Delete (sem conversão complexa necessária)
-
-
+    // Converts a MunicipalityDTO to a Municipality entity.
     Municipality toMunicipality(MunicipalityDTO dto);
 
+    // Converts a ContainerDTO to a Container entity.
     Container toContainer(ContainerDTO dto);
 
+    // Converts a BucketMunicipality entity to a BucketMunicipalityDTO.
     BucketMunicipalityDTO toDTO(BucketMunicipality bucketMunicipality);
 
+    // Converts a list of BucketMunicipality entities to a list of BucketMunicipalityDTOs.
     List<BucketMunicipalityDTO> toDTOList(List<BucketMunicipality> list);
 
-    Municipality toEntity(MunicipalityDTO dto);
-
-    @Mapping(source = "bucket", target = "bucket")
-    @Mapping(source = "user", target = "municipality")
-    CreateBucketAssociationResponseDTO toCreateBucketAssociationResponseDTO(BucketMunicipality association);
-
-
+    // Converts a Municipality entity to a MunicipalityDTO.
     MunicipalityDTO toMunicipalityDTO(Municipality municipality);
 
+    // Converts a BucketMunicipality entity to CreateBucketAssociationResponseDTO.
+    CreateBucketAssociationResponseDTO toCreateBucketAssociationResponseDTO(BucketMunicipality association);
 }

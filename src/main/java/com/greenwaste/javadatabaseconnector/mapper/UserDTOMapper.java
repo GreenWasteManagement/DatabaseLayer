@@ -3,39 +3,45 @@ package com.greenwaste.javadatabaseconnector.mapper;
 import com.greenwaste.javadatabaseconnector.dtos.base.*;
 import com.greenwaste.javadatabaseconnector.model.*;
 import org.mapstruct.Mapper;
-
-import java.util.List;
-import java.util.Map;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserDTOMapper {
 
-    // Conversores para DTOs simples
+    UserDTOMapper INSTANCE = Mappers.getMapper(UserDTOMapper.class);
+
+    // === ENTITY TO DTO ===
+
     UserDTO toUserDTO(User user);
+
+    AddressDTO toAddressDTO(Address address);
+
+    PostalCodeDTO toPostalCodeDTO(PostalCode postalCode);
+
     AdminDTO toAdminDTO(Admin admin);
-    SmasDTO toSmasDTO(Smas smas);
+
     MunicipalityDTO toMunicipalityDTO(Municipality municipality);
-    BucketDTO toBucketDTO(Bucket bucket);
-    ContainerDTO toContainerDTO(Container container);
 
-    // Conversores de listas
-    default Map<String, Object> mapToAdminList(List<Admin> list) {
-        return Map.of("admins", list.stream().map(this::toAdminDTO).toList());
-    }
+    SmasDTO toSmasDTO(Smas smas);
 
-    default Map<String, Object> mapToSmasList(List<Smas> list) {
-        return Map.of("smas", list.stream().map(this::toSmasDTO).toList());
-    }
+    // === DTO TO ENTITY ===
 
-    default Map<String, Object> mapToMunicipalityList(List<Municipality> list) {
-        return Map.of("municipalities", list.stream().map(this::toMunicipalityDTO).toList());
-    }
+    @Mapping(target = "User.id", ignore = true)
+    User toUser(UserDTO dto);
 
-    default Map<String, Object> mapToBucketList(List<Bucket> list) {
-        return Map.of("buckets", list.stream().map(this::toBucketDTO).toList());
-    }
+    @Mapping(target = "Address.id", ignore = true)
+    Address toAddress(AddressDTO dto);
 
-    default Map<String, Object> mapToContainerList(List<Container> list) {
-        return Map.of("containers", list.stream().map(this::toContainerDTO).toList());
-    }
+    @Mapping(target = "PostalCode.id", ignore = true)
+    PostalCode toPostalCode(PostalCodeDTO dto);
+
+    @Mapping(target = "Admin.id", ignore = true)
+    Admin toAdmin(AdminDTO dto);
+
+    @Mapping(target = "Municipality.id", ignore = true)
+    Municipality toMunicipality(MunicipalityDTO dto);
+
+    @Mapping(target = "Smas.id", ignore = true)
+    Smas toSmas(SmasDTO dto);
 }

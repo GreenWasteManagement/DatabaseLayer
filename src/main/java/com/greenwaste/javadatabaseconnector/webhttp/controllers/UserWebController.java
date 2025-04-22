@@ -3,19 +3,17 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 import com.greenwaste.javadatabaseconnector.dtos.base.AdminDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.SmasDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.request.*;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateAdminResponseDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateMunicipalityResponseDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateSmasResponseDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.UpdateSuccessResponseDTO;
 import com.greenwaste.javadatabaseconnector.mapper.UserDTOMapper;
-import com.greenwaste.javadatabaseconnector.model.Admin;
-import com.greenwaste.javadatabaseconnector.model.Municipality;
-import com.greenwaste.javadatabaseconnector.model.Smas;
-import com.greenwaste.javadatabaseconnector.model.User;
+import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,109 +21,119 @@ import java.util.Map;
 public class UserWebController {
 
     private final UserService userService;
-    private final UserDTOMapper mapper;
+    private final UserDTOMapper userDTOMapper;
 
-    // Admin
-    @PostMapping("/admin")
-    public ResponseEntity<Map<String, Object>> createAdmin(@Valid @RequestBody AdminDTO adminDTO) {
-        User user = new User();  // Criar a instância de User (deve ser validado na camada de serviço)
-        Admin admin = new Admin();
-        // Associa os dados recebidos aos objetos
-        admin.setCitizenCardCode(adminDTO.getCitizenCardCode());  // Exemplo de mapeamento
-        // Aqui você vai criar o usuário junto com o admin, passando os dados da DTO
-        admin = userService.createAdmin(user, admin, adminDTO.getAddress(), adminDTO.getPostalCode());
-        return ResponseEntity.ok(mapper.mapToAdminList(List.of(admin)));
+
+    @PostMapping("/create/admin")
+    public ResponseEntity<CreateAdminResponseDTO> createAdmin(@RequestBody CreateAdminRequestDTO dto) {
+        var user = userDTOMapper.toUser(dto.getUser());
+        var admin = userDTOMapper.toAdmin(dto.getAdmin());
+        var address = userDTOMapper.toAddress(dto.getAddress());
+        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+
+        var savedAdmin = userService.createAdmin(user, admin, address, postalCode);
+        var responseDTO = new CreateAdminResponseDTO(userDTOMapper.toAdminDTO(savedAdmin));
+        return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/admin/{id}")
-    public ResponseEntity<Map<String, Object>> getAdminById(@PathVariable Long id) {
-        Admin admin = userService.getAdminById(id);
-        return ResponseEntity.ok(mapper.mapToAdminList(List.of(admin)));
+    @PostMapping("/create/municipality")
+    public ResponseEntity<CreateMunicipalityResponseDTO> createMunicipality(@RequestBody CreateMunicipalityRequestDTO dto) {
+        var user = userDTOMapper.toUser(dto.getUser());
+        var municipality = userDTOMapper.toMunicipality(dto.getMunicipality());
+        var address = userDTOMapper.toAddress(dto.getAddress());
+        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+
+        var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
+        var responseDTO = new CreateMunicipalityResponseDTO(userDTOMapper.toMunicipalityDTO(savedMunicipality));
+        return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/admin")
-    public ResponseEntity<Map<String, Object>> listAdmins() {
-        List<Admin> all = userService.getAllAdmins();
-        return ResponseEntity.ok(mapper.mapToAdminList(all));
+    @PostMapping("/create/smas")
+    public ResponseEntity<CreateSmasResponseDTO> createSmas(@RequestBody CreateSmasRequestDTO dto) {
+        var user = userDTOMapper.toUser(dto.getUser());
+        var smas = userDTOMapper.toSmas(dto.getSmas());
+        var address = userDTOMapper.toAddress(dto.getAddress());
+        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+
+        var savedSmas = userService.createSmas(user, smas, address, postalCode);
+        var responseDTO = new CreateSmasResponseDTO(userDTOMapper.toSmasDTO(savedSmas));
+        return ResponseEntity.ok(responseDTO);
     }
 
-    // Smas
-    @PostMapping("/smas")
-    public ResponseEntity<Map<String, Object>> createSmas(@Valid @RequestBody SmasDTO dto) {
-        User user = new User();
-        Smas smas = new Smas();
-        smas.setCitizenCardCode(dto.getCitizenCardCode());
-        smas.setEmployeeCode(dto.getEmployeeCode());
-        smas.setPosition(dto.getPosition());
-        smas = userService.createSmas(user, smas, dto.getAddress(), dto.getPostalCode());
-        return ResponseEntity.ok(mapper.mapToSmasList(List.of(smas)));
+    @PutMapping("/update")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateUser(@RequestBody UpdateUserRequestDTO dto) {
+        User user = userDTOMapper.toUser(dto.getUser());
+        userService.updateUser(user);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("User updated successfully."));
     }
 
-    @GetMapping("/smas/{id}")
-    public ResponseEntity<Map<String, Object>> getSmasById(@PathVariable Long id) {
-        Smas smas = userService.getSmasById(id);
-        return ResponseEntity.ok(mapper.mapToSmasList(List.of(smas)));
+    @PutMapping("/update/address")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateAddress(@RequestBody UpdateAddressRequestDTO dto) {
+        Address address = userDTOMapper.toAddress(dto.getAddress());
+        userService.updateUserAddress(address);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Address updated successfully."));
     }
 
-    @GetMapping("/smas")
-    public ResponseEntity<Map<String, Object>> listSmas() {
-        List<Smas> all = userService.getAllSmas();
-        return ResponseEntity.ok(mapper.mapToSmasList(all));
+    @PutMapping("/update/admin")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateAdmin(@RequestBody UpdateAdminRequestDTO dto) {
+        Admin admin = userDTOMapper.toAdmin(dto.getAdmin());
+        userService.updateAdmin(admin);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Admin updated successfully."));
     }
 
-    // Municipalities
-    @PostMapping("/municipality")
-    public ResponseEntity<Map<String, Object>> createMunicipality(@Valid @RequestBody MunicipalityDTO dto) {
-        User user = new User();
-        Municipality municipality = new Municipality();
-        municipality.setCitizenCardCode(dto.getCitizenCardCode());
-        municipality.setNif(dto.getNif());
-        municipality = userService.createMunicipality(user, municipality, dto.getAddress(), dto.getPostalCode());
-        return ResponseEntity.ok(mapper.mapToMunicipalityList(List.of(municipality)));
+
+    @PutMapping("/update/smas")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateSmas(@RequestBody UpdateSmasRequestDTO dto) {
+        Smas smas = userDTOMapper.toSmas(dto.getSmas());
+        userService.updateSmas(smas);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("SMAS updated successfully."));
     }
 
-    @GetMapping("/municipality/{id}")
-    public ResponseEntity<Map<String, Object>> getMunicipalityById(@PathVariable Long id) {
-        Municipality municipality = userService.getMunicipalityById(id);
-        return ResponseEntity.ok(mapper.mapToMunicipalityList(List.of(municipality)));
+    @PutMapping("/update/municipality")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateMunicipality(@RequestBody UpdateMunicipalityRequestDTO dto) {
+        Municipality municipality = userDTOMapper.toMunicipality(dto.getMunicipality());
+        userService.updateMunicipality(municipality);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Municipality updated successfully."));
     }
 
-    @GetMapping("/municipality")
-    public ResponseEntity<Map<String, Object>> listMunicipalities() {
-        List<Municipality> list = userService.getAllMunicipalities();
-        return ResponseEntity.ok(mapper.mapToMunicipalityList(list));
+    @PutMapping("/update/postalcode")
+    public ResponseEntity<UpdateSuccessResponseDTO> updatePostalCode(@RequestBody UpdatePostalCodeRequestDTO dto) {
+        PostalCode postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        userService.updatePostalCode(postalCode);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Postal code updated successfully."));
     }
 
-    // Atualização de Admin
-    @PutMapping("/admin/{id}")
-    public ResponseEntity<Map<String, Object>> updateAdmin(@PathVariable Long id, @Valid @RequestBody AdminDTO dto) {
-        Admin updatedAdmin = new Admin();
-        updatedAdmin.setId(id);
-        updatedAdmin.setCitizenCardCode(dto.getCitizenCardCode());
-        userService.updateAdmin(updatedAdmin);
-        return ResponseEntity.ok(mapper.mapToAdminList(List.of(updatedAdmin)));
+
+    @DeleteMapping("/delete/user")
+    public ResponseEntity<UpdateSuccessResponseDTO> deleteUser(@RequestBody DeleteUserRequestDTO dto) {
+        User user = userDTOMapper.toUser(dto.getUser());
+        userService.deleteUser(user);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("User deleted successfully."));
     }
 
-    // Atualização de Smas
-    @PutMapping("/smas/{id}")
-    public ResponseEntity<Map<String, Object>> updateSmas(@PathVariable Long id, @Valid @RequestBody SmasDTO dto) {
-        Smas updatedSmas = new Smas();
-        updatedSmas.setId(id);
-        updatedSmas.setCitizenCardCode(dto.getCitizenCardCode());
-        updatedSmas.setEmployeeCode(dto.getEmployeeCode());
-        updatedSmas.setPosition(dto.getPosition());
-        userService.updateSmas(updatedSmas);
-        return ResponseEntity.ok(mapper.mapToSmasList(List.of(updatedSmas)));
+    @DeleteMapping("/delete/postalcode")
+    public ResponseEntity<UpdateSuccessResponseDTO> deletePostalCode(@RequestBody DeletePostalCodeRequestDTO dto) {
+        PostalCode postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        userService.deletePostalCode(postalCode);
+        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Postal code deleted successfully."));
     }
 
-    // Atualização de Municipality
-    @PutMapping("/municipality/{id}")
-    public ResponseEntity<Map<String, Object>> updateMunicipality(@PathVariable Long id, @Valid @RequestBody MunicipalityDTO dto) {
-        Municipality updatedMunicipality = new Municipality();
-        updatedMunicipality.setId(id);
-        updatedMunicipality.setCitizenCardCode(dto.getCitizenCardCode());
-        updatedMunicipality.setNif(dto.getNif());
-        userService.updateMunicipality(updatedMunicipality);
-        return ResponseEntity.ok(mapper.mapToMunicipalityList(List.of(updatedMunicipality)));
+    @PostMapping("/get/admin")
+    public ResponseEntity<AdminDTO> getAdminById(@RequestBody GetAdminByIdRequestDTO dto) {
+        Admin admin = userService.getAdminById(dto.getId());
+        return ResponseEntity.ok(userDTOMapper.toAdminDTO(admin));
     }
+
+    @PostMapping("/get/smas")
+    public ResponseEntity<SmasDTO> getSmasById(@RequestBody GetSmasByIdRequestDTO dto) {
+        Smas smas = userService.getSmasById(dto.getId());
+        return ResponseEntity.ok(userDTOMapper.toSmasDTO(smas));
+    }
+
+    @PostMapping("/get/municipality")
+    public ResponseEntity<MunicipalityDTO> getMunicipalityById(@RequestBody GetMunicipalityByIdRequestDTO dto) {
+        Municipality municipality = userService.getMunicipalityById(dto.getId());
+        return ResponseEntity.ok(userDTOMapper.toMunicipalityDTO(municipality));
+    }
+
 }

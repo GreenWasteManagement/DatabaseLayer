@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.container;
+package com.greenwaste.javadatabaseconnector.dtos.container.response;
 
 import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
 import lombok.AllArgsConstructor;
