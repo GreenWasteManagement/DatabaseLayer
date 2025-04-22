@@ -50,9 +50,9 @@ public class UserWebController {
         var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
 
 
-        System.out.println(user);
-        System.out.println(municipality);
-        System.out.println(address);
+        System.out.println(user.getEmail());
+        //System.out.println(municipality.getUser().getName());
+        System.out.println(postalCode.getPostalCode());
         System.out.println(postalCode.getCounty());
 
         var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
