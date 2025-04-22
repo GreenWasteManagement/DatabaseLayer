@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.older.bucketwebdto;
+package com.greenwaste.javadatabaseconnector.dtos.olderandnotusednow.bucketwebdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

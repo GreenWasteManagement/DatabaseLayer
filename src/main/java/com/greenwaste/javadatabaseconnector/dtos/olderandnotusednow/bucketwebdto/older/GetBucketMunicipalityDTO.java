@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.older.bucketwebdto.older;
+package com.greenwaste.javadatabaseconnector.dtos.olderandnotusednow.bucketwebdto.older;
 
 import java.time.Instant;
 
