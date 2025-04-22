@@ -38,4 +38,9 @@ public class ContainerUnloading {
     @Column(name = "unloading_timestamp")
     private Instant unloadingTimestamp;
 
+
+       /*
+    @Version
+    private Long version;
+*/
 }

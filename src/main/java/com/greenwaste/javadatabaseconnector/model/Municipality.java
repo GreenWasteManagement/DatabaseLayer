@@ -33,4 +33,9 @@ public class Municipality {
     @OneToMany(mappedBy = "user")
     private Set<BucketMunicipality> bucketMunicipalities = new LinkedHashSet<>();
 
+
+       /*
+    @Version
+    private Long version;
+*/
 }

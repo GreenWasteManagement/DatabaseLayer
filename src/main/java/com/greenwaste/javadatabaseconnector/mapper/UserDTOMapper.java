@@ -2,6 +2,7 @@ package com.greenwaste.javadatabaseconnector.mapper;
 
 import com.greenwaste.javadatabaseconnector.dtos.base.*;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.LoginRequestDTO;
+import com.greenwaste.javadatabaseconnector.mapper.user.CreateMunicipalityMapper;
 import com.greenwaste.javadatabaseconnector.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,6 +10,15 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserDTOMapper {
+
+    // New Part of Code
+
+
+    CreateMunicipalityMapper CREATE_MUNICIPALITY = Mappers.getMapper(CreateMunicipalityMapper.class);
+
+
+
+
 
     UserDTOMapper INSTANCE = Mappers.getMapper(UserDTOMapper.class);
 

@@ -38,4 +38,8 @@ public class BucketMunicipalityContainer {
     @Column(name = "deposit_amount", nullable = false, precision = 14, scale = 2)
     private BigDecimal depositAmount;
 
+       /*
+    @Version
+    private Long version;
+*/
 }

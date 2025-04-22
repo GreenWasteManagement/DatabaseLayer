@@ -51,4 +51,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private user_role role;
 
+
+       /*
+    @Version
+    private Long version;
+*/
 }

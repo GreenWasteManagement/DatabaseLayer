@@ -38,4 +38,8 @@ public class Address {
     @JoinColumn(name = "postal_code_id", nullable = false)
     private PostalCode postalCode;
 
+    /*
+    @Version
+    private Long version;
+*/
 }

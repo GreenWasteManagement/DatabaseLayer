@@ -24,4 +24,8 @@ public class Admin {
     @Column(name = "citizen_card_code", nullable = false, length = 50)
     private String citizenCardCode;
 
+       /*
+    @Version
+    private Long version;
+*/
 }

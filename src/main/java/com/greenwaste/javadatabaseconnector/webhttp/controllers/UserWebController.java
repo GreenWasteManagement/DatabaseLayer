@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -44,22 +46,21 @@ public class UserWebController {
 
     @PostMapping("/create/municipality")
     public ResponseEntity<CreateMunicipalityResponseDTO> createMunicipality(@RequestBody CreateMunicipalityRequestDTO dto) {
-        var user = userDTOMapper.toUser(dto.getUser());
-        var municipality = userDTOMapper.toMunicipality(dto.getMunicipality());
-        var address = userDTOMapper.toAddress(dto.getAddress());
-        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
-
+        var user = UserDTOMapper.CREATE_MUNICIPALITY.toUser(dto.getUser());
+        var municipality = UserDTOMapper.CREATE_MUNICIPALITY.toMunicipality(dto.getMunicipality());
+        var address = UserDTOMapper.CREATE_MUNICIPALITY.toAddress(dto.getAddress());
+        var postalCode = UserDTOMapper.CREATE_MUNICIPALITY.toPostalCode(dto.getPostalCode());
 
         System.out.println(user.getEmail());
-        //System.out.println(municipality.getUser().getName());
         System.out.println(postalCode.getPostalCode());
         System.out.println(postalCode.getCounty());
 
         var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
-        var responseDTO = new CreateMunicipalityResponseDTO(userDTOMapper.toMunicipalityDTO(savedMunicipality));
+
+        var responseDTO = new CreateMunicipalityResponseDTO(UserDTOMapper.CREATE_MUNICIPALITY.toMunicipalityDTO(savedMunicipality));
+
         return ResponseEntity.ok(responseDTO);
     }
-
     @PostMapping("/create/smas")
     public ResponseEntity<CreateSmasResponseDTO> createSmas(@RequestBody CreateSmasRequestDTO dto) {
         var user = userDTOMapper.toUser(dto.getUser());

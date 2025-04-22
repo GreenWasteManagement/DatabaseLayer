@@ -36,4 +36,8 @@ public class Container {
     @OneToMany(mappedBy = "container")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
+       /*
+    @Version
+    private Long version;
+*/
 }

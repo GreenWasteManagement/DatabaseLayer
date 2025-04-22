@@ -30,4 +30,9 @@ public class PostalCode {
     @OneToMany(mappedBy = "postalCode")
     private Set<Address> addresses = new LinkedHashSet<>();
 
+
+       /*
+    @Version
+    private Long version;
+*/
 }

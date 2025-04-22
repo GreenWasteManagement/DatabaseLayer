@@ -36,4 +36,9 @@ public class Smas {
     @OneToMany(mappedBy = "user")
     private Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
+
+       /*
+    @Version
+    private Long version;
+*/
 }
