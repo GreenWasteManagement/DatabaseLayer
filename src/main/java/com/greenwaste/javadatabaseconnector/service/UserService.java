@@ -190,28 +190,24 @@ public class UserService {
 
     @Transactional
     public void updateSmas(Smas updatedSmas) {
-        if (updatedSmas.getId() != null) {
-            Optional<Smas> existingSmasOpt = smasRepository.findById(updatedSmas.getId());
+        if (updatedSmas.getId() == null) return;
 
-            if (existingSmasOpt.isPresent()) {
-                Smas existingSmas = existingSmasOpt.get();
+        smasRepository.findById(updatedSmas.getId()).ifPresent(existingSmas -> {
 
-                if (updatedSmas.getCitizenCardCode() != null && !updatedSmas.getCitizenCardCode().equals(existingSmas.getCitizenCardCode())) {
-                    existingSmas.setCitizenCardCode(updatedSmas.getCitizenCardCode());
-                }
-
-                if (updatedSmas.getEmployeeCode() != null && !updatedSmas.getEmployeeCode().equals(existingSmas.getEmployeeCode())) {
-                    existingSmas.setEmployeeCode(updatedSmas.getEmployeeCode());
-                }
-
-                if (updatedSmas.getPosition() != null && !updatedSmas.getPosition().equals(existingSmas.getPosition())) {
-                    existingSmas.setPosition(updatedSmas.getPosition());
-                }
-
-                smasRepository.save(existingSmas);
-
+            if (updatedSmas.getCitizenCardCode() != null && !updatedSmas.getCitizenCardCode().equals(existingSmas.getCitizenCardCode())) {
+                existingSmas.setCitizenCardCode(updatedSmas.getCitizenCardCode());
             }
-        }
+
+            if (updatedSmas.getEmployeeCode() != null && !updatedSmas.getEmployeeCode().equals(existingSmas.getEmployeeCode())) {
+                existingSmas.setEmployeeCode(updatedSmas.getEmployeeCode());
+            }
+
+            if (updatedSmas.getPosition() != null && !updatedSmas.getPosition().equals(existingSmas.getPosition())) {
+                existingSmas.setPosition(updatedSmas.getPosition());
+            }
+
+            smasRepository.save(existingSmas);
+        });
     }
 
     @Transactional

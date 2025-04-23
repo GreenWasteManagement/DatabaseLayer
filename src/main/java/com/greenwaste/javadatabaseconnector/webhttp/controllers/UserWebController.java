@@ -121,6 +121,8 @@ public class UserWebController {
 
         Address address = modelMapper.map(dto.getAddress(), Address.class);
 
+        userService.updateUserAddress(address);
+
         UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
         responseDTO.setMessage("Address updated successfully.");
 
