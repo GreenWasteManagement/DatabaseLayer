@@ -231,7 +231,7 @@ public class UserWebController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/get/smas{id}")
+    @PostMapping("/get/smas/{id}")
     public ResponseEntity<GetSmasByIdResponseDTO> getSmasById(@PathVariable Long id) {
 
         ModelMapper modelMapper = new ModelMapper();
