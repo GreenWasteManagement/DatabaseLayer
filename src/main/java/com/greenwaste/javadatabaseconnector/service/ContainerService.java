@@ -1,8 +1,11 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.container.response.GetAllContainersResponseDTO;
+import com.greenwaste.javadatabaseconnector.model.BucketMunicipalityContainer;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.model.Smas;
+import com.greenwaste.javadatabaseconnector.service.repository.BucketMunicipalityContainerRepository;
 import com.greenwaste.javadatabaseconnector.service.repository.ContainerRepository;
 import com.greenwaste.javadatabaseconnector.service.repository.ContainerUnloadingRepository;
 import com.greenwaste.javadatabaseconnector.service.repository.SmasRepository;
@@ -20,12 +23,14 @@ public class ContainerService {
 
     private final ContainerRepository containerRepository;
     private final ContainerUnloadingRepository containerUnloadingRepository;
+    private final BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository;
     private final SmasRepository smasRepository;
 
     public ContainerService(ContainerRepository containerRepository,
-                            ContainerUnloadingRepository containerUnloadingRepository, SmasRepository smasRepository) {
+                            ContainerUnloadingRepository containerUnloadingRepository, BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository, SmasRepository smasRepository) {
         this.containerRepository = containerRepository;
         this.containerUnloadingRepository = containerUnloadingRepository;
+        this.bucketMunicipalityContainerRepository = bucketMunicipalityContainerRepository;
         this.smasRepository = smasRepository;
     }
 
@@ -95,4 +100,13 @@ public class ContainerService {
         }
         return null;
     }
+
+    public List<BucketMunicipalityContainer> getAllBucketMunicipalityContainers() {
+        return bucketMunicipalityContainerRepository.findAll();  // ou uma consulta personalizada, dependendo da lógica
+    }
+
+    public List<ContainerUnloading> getAllContainerUnloadings() {
+        return containerUnloadingRepository.findAll();  // ou uma consulta personalizada
+    }
+
 }

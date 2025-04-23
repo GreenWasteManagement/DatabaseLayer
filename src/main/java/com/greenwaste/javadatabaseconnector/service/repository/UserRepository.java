@@ -19,62 +19,62 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Buscar todos com detalhes de ADMIN
     @Query("""
-    SELECT u FROM User u
-    JOIN u.admin a
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'ADMIN'
-    """)
+            SELECT u FROM User u
+            JOIN u.admin a
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'ADMIN'
+            """)
     List<User> findAllWithAdminDetails();
 
     // Buscar todos com detalhes de SMAS
     @Query("""
-    SELECT u FROM User u
-    JOIN u.smas s
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'SMAS'
-    """)
+            SELECT u FROM User u
+            JOIN u.smas s
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'SMAS'
+            """)
     List<User> findAllWithSmasDetails();
 
     // Buscar todos com detalhes de MUNICIPALITY
     @Query("""
-    SELECT u FROM User u
-    JOIN u.municipality m
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'MUNICIPALITY'
-    """)
+            SELECT u FROM User u
+            JOIN u.municipality m
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'MUNICIPALITY'
+            """)
     List<User> findAllWithMunicipalityDetails();
 
     // Buscar um ADMIN por ID
     @Query("""
-    SELECT u FROM User u
-    JOIN u.admin a
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'ADMIN' AND u.id = :id
-    """)
+            SELECT u FROM User u
+            JOIN u.admin a
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'ADMIN' AND u.id = :id
+            """)
     Optional<User> findUserWithAdminDetailsById(@Param("id") Long id);
 
     // Buscar um SMAS por ID
     @Query("""
-    SELECT u FROM User u
-    JOIN u.smas s
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'SMAS' AND u.id = :id
-    """)
+            SELECT u FROM User u
+            JOIN u.smas s
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'SMAS' AND u.id = :id
+            """)
     Optional<User> findUserWithSmasDetailsById(@Param("id") Long id);
 
     // Buscar um MUNICIPALITY por ID
     @Query("""
-    SELECT u FROM User u
-    JOIN u.municipality m
-    JOIN u.address ad
-    JOIN ad.postalCode pc
-    WHERE u.role = 'MUNICIPALITY' AND u.id = :id
-    """)
+            SELECT u FROM User u
+            JOIN u.municipality m
+            JOIN u.address ad
+            JOIN ad.postalCode pc
+            WHERE u.role = 'MUNICIPALITY' AND u.id = :id
+            """)
     Optional<User> findUserWithMunicipalityDetailsById(@Param("id") Long id);
 
     /*
