@@ -7,7 +7,6 @@ import com.greenwaste.javadatabaseconnector.service.repository.*;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtcreator.JwtService;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.passwordmanager.BCryptService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +45,6 @@ public class UserService {
     public Admin createAdmin(User user, Admin admin, Address address, PostalCode postalCode) {
 
         user.setPassword(bCryptService.encode(user.getPassword()));
-
-        System.out.println(postalCode.getCounty());
 
         postalCodeRepository.save(postalCode);
 
@@ -116,40 +113,30 @@ public class UserService {
 
     @Transactional
     public void updateUser(User updatedUser) {
-
-        // Missing the verification of
-
-
         Optional<User> userOptional = userRepository.findById(updatedUser.getId());
 
-        if (userOptional.isPresent()) {
-
-            User existingUser = userOptional.get();
-
-            if (updatedUser.getName() != null && !updatedUser.getName().equals(existingUser.getName())) {
-                Optional<User> userWithSameName = userRepository.findByName(updatedUser.getName());
-                if (!userWithSameName.isPresent()) {
-                    existingUser.setName(updatedUser.getName());
-                }
-            }
-
-            if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(existingUser.getEmail())) {
-                Optional<User> userWithSameEmail = userRepository.findByEmail(updatedUser.getEmail());
-                if (!userWithSameEmail.isPresent()) {
-                    existingUser.setEmail(updatedUser.getEmail());
-                }
-            }
-
-            if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().equals(existingUser.getPhoneNumber())) {
-                Optional<User> userWithSamePhone = userRepository.findByPhoneNumber(updatedUser.getPhoneNumber());
-                if (!userWithSamePhone.isPresent()) {
-                    existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-                }
-            }
-
-
-            userRepository.save(existingUser);
+        if (userOptional.isEmpty()) {
+            return;
         }
+
+        User existingUser = userOptional.get();
+
+        if (updatedUser.getName() != null && !updatedUser.getName().equals(existingUser.getName())) {
+            userRepository.findByName(updatedUser.getName()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
+            }, () -> existingUser.setName(updatedUser.getName()));
+        }
+
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(existingUser.getEmail())) {
+            userRepository.findByEmail(updatedUser.getEmail()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
+            }, () -> existingUser.setEmail(updatedUser.getEmail()));
+        }
+
+        if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().equals(existingUser.getPhoneNumber())) {
+            userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
+            }, () -> existingUser.setPhoneNumber(updatedUser.getPhoneNumber()));
+        }
+
+        userRepository.save(existingUser);
     }
 
     @Transactional
