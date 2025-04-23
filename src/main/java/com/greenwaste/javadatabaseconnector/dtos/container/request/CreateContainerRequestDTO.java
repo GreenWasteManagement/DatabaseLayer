@@ -10,4 +10,5 @@ import java.math.BigDecimal;
 public class CreateContainerRequestDTO {
     private BigDecimal capacity;
     private BigDecimal currentVolumeLevel;
+    private String localization;
 }
