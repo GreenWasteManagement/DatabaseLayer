@@ -3,6 +3,7 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
+import com.greenwaste.javadatabaseconnector.service.BucketService;
 import com.greenwaste.javadatabaseconnector.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -355,5 +356,9 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
+    @GetMapping("/get/municipalities/buckets")
+    public ResponseEntity<GetAllMunicipalitiesAndBucketsResponseDTO> getAllMunicipalitiesWithActiveBuckets() {
+        GetAllMunicipalitiesAndBucketsResponseDTO response = userService.getAllMunicipalitiesWithActiveBuckets();
+        return ResponseEntity.ok(response);
+    }
 }

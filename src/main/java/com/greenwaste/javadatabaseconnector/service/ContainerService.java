@@ -107,6 +107,9 @@ public class ContainerService {
 
     @Transactional
     public List<ContainerUnloading> getAllContainerUnloadings() {
+        List<ContainerUnloading> unloadings = containerUnloadingRepository.findAll();
+
+        unloadings.forEach(System.out::println);
         return containerUnloadingRepository.findAll();
     }
 

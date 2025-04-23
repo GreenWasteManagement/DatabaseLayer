@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;
 import com.greenwaste.javadatabaseconnector.service.exceptions.UsernameNotFoundException;
@@ -7,11 +8,11 @@ import com.greenwaste.javadatabaseconnector.service.repository.*;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtcreator.JwtService;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.passwordmanager.BCryptService;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -25,8 +26,9 @@ public class UserService {
     private final BCryptService bcryptService;
     private final JwtService jwtService;
     private final BCryptService bCryptService;
+    private final BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository;
 
-    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService, BCryptService bCryptService) {
+    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService, BCryptService bCryptService, BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
         this.smasRepository = smasRepository;
@@ -36,6 +38,7 @@ public class UserService {
         this.bcryptService = bcryptService;
         this.jwtService = jwtService;
         this.bCryptService = bCryptService;
+        this.bucketMunicipalityContainerRepository = bucketMunicipalityContainerRepository;
     }
 
 
@@ -334,6 +337,44 @@ public class UserService {
         users.forEach(user -> System.out.println("Fetched Municipality: " + user));
         return users;
     }
+
+    public GetAllMunicipalitiesAndBucketsResponseDTO getAllMunicipalitiesWithActiveBuckets() {
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<BucketMunicipalityContainer> containers = bucketMunicipalityContainerRepository.findAllActiveWithRelations();
+
+        Map<Long, GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData> municipalityMap = new HashMap<>();
+
+        for (BucketMunicipalityContainer container : containers) {
+            BucketMunicipality association = container.getAssociation();
+            Municipality municipality = association.getUser().getUser().getMunicipality();
+            Long municipalityId = municipality.getId();
+
+            GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData data = municipalityMap.computeIfAbsent(municipalityId, id -> {
+                GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData dto = new GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData();
+                dto.setUser(modelMapper.map(municipality.getUser(), GetAllMunicipalitiesAndBucketsResponseDTO.User.class));
+                dto.setMunicipality(modelMapper.map(municipality, GetAllMunicipalitiesAndBucketsResponseDTO.Municipality.class));
+                dto.setAddress(modelMapper.map(municipality.getUser().getAddress(), GetAllMunicipalitiesAndBucketsResponseDTO.Address.class));
+                dto.setPostalCode(modelMapper.map(municipality.getUser().getAddress().getPostalCode(), GetAllMunicipalitiesAndBucketsResponseDTO.PostalCode.class));
+                dto.setBuckets(new ArrayList<>());
+                return dto;
+            });
+
+            GetAllMunicipalitiesAndBucketsResponseDTO.Bucket bucketDTO = new GetAllMunicipalitiesAndBucketsResponseDTO.Bucket();
+            bucketDTO.setId(association.getBucket().getId());
+            bucketDTO.setCapacity(association.getBucket().getCapacity());
+            bucketDTO.setStatus(association.getBucket().getIsAssociated());
+
+            if (!data.getBuckets().stream().anyMatch(b -> b.getId().equals(bucketDTO.getId()))) {
+                data.getBuckets().add(bucketDTO);
+            }
+        }
+
+        GetAllMunicipalitiesAndBucketsResponseDTO response = new GetAllMunicipalitiesAndBucketsResponseDTO();
+        response.setMunicipalities(new ArrayList<>(municipalityMap.values()));
+        return response;
+    }
+
 
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));

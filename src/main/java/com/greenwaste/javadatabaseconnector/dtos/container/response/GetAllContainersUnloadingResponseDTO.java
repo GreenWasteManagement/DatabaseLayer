@@ -27,7 +27,6 @@ public class GetAllContainersUnloadingResponseDTO {
         private String position;
         private String employeeCode;
         private String citizenCardCode;
-        private Set<Long> containerUnloadingIds;
     }
 
     @Getter
