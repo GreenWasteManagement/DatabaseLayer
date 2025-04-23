@@ -4,17 +4,15 @@ import com.greenwaste.javadatabaseconnector.dtos.base.AdminDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
 import com.greenwaste.javadatabaseconnector.dtos.base.SmasDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.*;
-import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateAdminResponseDTO;
-import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateMunicipalityResponseDTO;
-import com.greenwaste.javadatabaseconnector.dtos.user.response.CreateSmasResponseDTO;
-import com.greenwaste.javadatabaseconnector.dtos.user.response.UpdateSuccessResponseDTO;
-import com.greenwaste.javadatabaseconnector.mapper.UserDTOMapper;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -22,34 +20,53 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserWebController {
 
+
     private final UserService userService;
-    private final UserDTOMapper userDTOMapper;
+
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
-        String token = userService.login(request);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
+        ModelMapper modelMapper = new ModelMapper();
+
+
+        User user = modelMapper.map(request, User.class);
+
+        String token = userService.login(user.getEmail(), user.getPassword());
+
+        LoginResponseDTO responseDTO = new LoginResponseDTO();
+        responseDTO.setToken(token);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/create/admin")
     public ResponseEntity<CreateAdminResponseDTO> createAdmin(@RequestBody CreateAdminRequestDTO dto) {
-        var user = userDTOMapper.toUser(dto.getUser());
-        var admin = userDTOMapper.toAdmin(dto.getAdmin());
-        var address = userDTOMapper.toAddress(dto.getAddress());
-        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        ModelMapper modelMapper = new ModelMapper();
 
-        var savedAdmin = userService.createAdmin(user, admin, address, postalCode);
-        var responseDTO = new CreateAdminResponseDTO(userDTOMapper.toAdminDTO(savedAdmin));
-        return ResponseEntity.ok(responseDTO);
+        User user = modelMapper.map(dto.getUser(), User.class);
+        Admin admin = modelMapper.map(dto.getAdmin(), Admin.class);
+        Address address = modelMapper.map(dto.getAddress(), Address.class);
+        PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+
+
+        System.out.println(postalCode.getCounty());
+
+        userService.createAdmin(user, admin, address, postalCode);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create/municipality")
     public ResponseEntity<CreateMunicipalityResponseDTO> createMunicipality(@RequestBody CreateMunicipalityRequestDTO dto) {
-        var user = UserDTOMapper.CREATE_MUNICIPALITY.toUser(dto.getUser());
-        var municipality = UserDTOMapper.CREATE_MUNICIPALITY.toMunicipality(dto.getMunicipality());
-        var address = UserDTOMapper.CREATE_MUNICIPALITY.toAddress(dto.getAddress());
-        var postalCode = UserDTOMapper.CREATE_MUNICIPALITY.toPostalCode(dto.getPostalCode());
+        ModelMapper modelMapper = new ModelMapper();
+
+        System.out.println(dto.getPostalCode().getCounty());
+
+        var user = modelMapper.map(dto.getUser(), User.class);
+        var municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
+        var address = modelMapper.map(dto.getAddress(), Address.class);
+        var postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
 
         System.out.println(user.getEmail());
         System.out.println(postalCode.getPostalCode());
@@ -57,96 +74,178 @@ public class UserWebController {
 
         var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
 
-        var responseDTO = new CreateMunicipalityResponseDTO(UserDTOMapper.CREATE_MUNICIPALITY.toMunicipalityDTO(savedMunicipality));
+        var responseDTO = new CreateMunicipalityResponseDTO();
+        responseDTO.setMunicipality(modelMapper.map(savedMunicipality, CreateMunicipalityResponseDTO.Municipality.class));
 
         return ResponseEntity.ok(responseDTO);
     }
+
     @PostMapping("/create/smas")
     public ResponseEntity<CreateSmasResponseDTO> createSmas(@RequestBody CreateSmasRequestDTO dto) {
-        var user = userDTOMapper.toUser(dto.getUser());
-        var smas = userDTOMapper.toSmas(dto.getSmas());
-        var address = userDTOMapper.toAddress(dto.getAddress());
-        var postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        ModelMapper modelMapper = new ModelMapper();
+
+
+        var user = modelMapper.map(dto.getUser(), User.class);
+        var smas = modelMapper.map(dto.getSmas(), Smas.class);
+        var address = modelMapper.map(dto.getAddress(), Address.class);
+        var postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
 
         var savedSmas = userService.createSmas(user, smas, address, postalCode);
-        var responseDTO = new CreateSmasResponseDTO(userDTOMapper.toSmasDTO(savedSmas));
+
+        var responseDTO = new CreateSmasResponseDTO();
+        responseDTO.setSmas(modelMapper.map(savedSmas, CreateSmasResponseDTO.Smas.class));
+
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @PutMapping("/update")
     public ResponseEntity<UpdateSuccessResponseDTO> updateUser(@RequestBody UpdateUserRequestDTO dto) {
-        User user = userDTOMapper.toUser(dto.getUser());
+        ModelMapper modelMapper = new ModelMapper();
+
+        User user = modelMapper.map(dto.getUser(), User.class);
+
         userService.updateUser(user);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("User updated successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("User updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PutMapping("/update/address")
     public ResponseEntity<UpdateSuccessResponseDTO> updateAddress(@RequestBody UpdateAddressRequestDTO dto) {
-        Address address = userDTOMapper.toAddress(dto.getAddress());
-        userService.updateUserAddress(address);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Address updated successfully."));
+        ModelMapper modelMapper = new ModelMapper();
+
+        Address address = modelMapper.map(dto.getAddress(), Address.class);
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("Address updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
+
 
     @PutMapping("/update/admin")
     public ResponseEntity<UpdateSuccessResponseDTO> updateAdmin(@RequestBody UpdateAdminRequestDTO dto) {
-        Admin admin = userDTOMapper.toAdmin(dto.getAdmin());
+        ModelMapper modelMapper = new ModelMapper();
+
+        Admin admin = modelMapper.map(dto.getAdmin(), Admin.class);
+
         userService.updateAdmin(admin);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Admin updated successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("Admin updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 
     @PutMapping("/update/smas")
     public ResponseEntity<UpdateSuccessResponseDTO> updateSmas(@RequestBody UpdateSmasRequestDTO dto) {
-        Smas smas = userDTOMapper.toSmas(dto.getSmas());
+        ModelMapper modelMapper = new ModelMapper();
+
+        Smas smas = modelMapper.map(dto.getSmas(), Smas.class);
+
         userService.updateSmas(smas);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("SMAS updated successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("SMAS updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
+
 
     @PutMapping("/update/municipality")
     public ResponseEntity<UpdateSuccessResponseDTO> updateMunicipality(@RequestBody UpdateMunicipalityRequestDTO dto) {
-        Municipality municipality = userDTOMapper.toMunicipality(dto.getMunicipality());
+        ModelMapper modelMapper = new ModelMapper();
+
+        Municipality municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
+
         userService.updateMunicipality(municipality);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Municipality updated successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("Municipality updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PutMapping("/update/postalcode")
     public ResponseEntity<UpdateSuccessResponseDTO> updatePostalCode(@RequestBody UpdatePostalCodeRequestDTO dto) {
-        PostalCode postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        ModelMapper modelMapper = new ModelMapper();
+
+        PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+
         userService.updatePostalCode(postalCode);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Postal code updated successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("Postal code updated successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 
     @DeleteMapping("/delete/user")
     public ResponseEntity<UpdateSuccessResponseDTO> deleteUser(@RequestBody DeleteUserRequestDTO dto) {
-        User user = userDTOMapper.toUser(dto.getUser());
+        ModelMapper modelMapper = new ModelMapper();
+
+        User user = modelMapper.map(dto.getUser(), User.class);
+
         userService.deleteUser(user);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("User deleted successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("User deleted successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/delete/postalcode")
     public ResponseEntity<UpdateSuccessResponseDTO> deletePostalCode(@RequestBody DeletePostalCodeRequestDTO dto) {
-        PostalCode postalCode = userDTOMapper.toPostalCode(dto.getPostalCode());
+        ModelMapper modelMapper = new ModelMapper();
+
+        PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+
         userService.deletePostalCode(postalCode);
-        return ResponseEntity.ok(new UpdateSuccessResponseDTO("Postal code deleted successfully."));
+
+        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
+        responseDTO.setMessage("Postal code deleted successfully.");
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/get/admin")
     public ResponseEntity<AdminDTO> getAdminById(@RequestBody GetAdminByIdRequestDTO dto) {
         Admin admin = userService.getAdminById(dto.getId());
-        return ResponseEntity.ok(userDTOMapper.toAdminDTO(admin));
+
+        ModelMapper modelMapper = new ModelMapper();
+        AdminDTO responseDTO = modelMapper.map(admin, AdminDTO.class);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/get/smas")
     public ResponseEntity<SmasDTO> getSmasById(@RequestBody GetSmasByIdRequestDTO dto) {
         Smas smas = userService.getSmasById(dto.getId());
-        return ResponseEntity.ok(userDTOMapper.toSmasDTO(smas));
+
+        ModelMapper modelMapper = new ModelMapper();
+        SmasDTO responseDTO = modelMapper.map(smas, SmasDTO.class);
+
+        return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/get/municipality")
     public ResponseEntity<MunicipalityDTO> getMunicipalityById(@RequestBody GetMunicipalityByIdRequestDTO dto) {
         Municipality municipality = userService.getMunicipalityById(dto.getId());
-        return ResponseEntity.ok(userDTOMapper.toMunicipalityDTO(municipality));
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(Municipality.class, MunicipalityDTO.class).addMappings(mapper -> {
+            mapper.map(src -> src.getBucketMunicipalities().stream().map(BucketMunicipality::getId).collect(Collectors.toSet()), MunicipalityDTO::setBucketMunicipalityIds);
+        });
+
+        MunicipalityDTO responseDTO = modelMapper.map(municipality, MunicipalityDTO.class);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 }

@@ -1,14 +1,22 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.response;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.SmasDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class CreateSmasResponseDTO {
-    private SmasDTO smas;
+    private Smas smas;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Smas {
+        private Long id;
+        private String position;
+        private String employeeCode;
+        private String citizenCardCode;
+    }
 }
+
 

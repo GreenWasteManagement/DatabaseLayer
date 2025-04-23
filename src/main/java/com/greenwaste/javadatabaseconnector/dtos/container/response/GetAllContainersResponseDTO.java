@@ -1,13 +1,25 @@
 package com.greenwaste.javadatabaseconnector.dtos.container.response;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
+@Setter
 @Data
-@AllArgsConstructor
 public class GetAllContainersResponseDTO {
-    private List<ContainerDTO> containers;
+    private List<Container> containers;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Container {
+        private Long id;
+        private BigDecimal capacity;
+        private String localization;
+        private BigDecimal currentVolumeLevel;
+    }
 }

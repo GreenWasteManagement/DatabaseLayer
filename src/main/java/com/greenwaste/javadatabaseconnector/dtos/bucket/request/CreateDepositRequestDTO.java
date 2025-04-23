@@ -1,19 +1,40 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.request;
 
 
-import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
-import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateDepositRequestDTO {
-    private MunicipalityDTO municipality;
-    private ContainerDTO container;
+    private Municipality municipality;
+    private Container container;
     private BigDecimal depositAmount;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Municipality {
+        private Long id;
+        private Long userId;
+        private String citizenCardCode;
+        private String nif;
+        private Set<Long> bucketMunicipalityIds;
+    }
+
+    @Getter
+    @Setter
+    @Data
+    public static class Container {
+        private Long id;
+        private BigDecimal capacity;
+        private String localization;
+        private BigDecimal currentVolumeLevel;
+    }
 }
+

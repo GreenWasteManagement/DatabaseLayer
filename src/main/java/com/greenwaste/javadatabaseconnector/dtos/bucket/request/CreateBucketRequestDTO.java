@@ -1,13 +1,22 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.BucketDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateBucketRequestDTO {
-    private BucketDTO bucket;
+    private Bucket bucket;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Bucket {
+        private BigDecimal capacity;
+        private Boolean isAssociated;
+    }
 }

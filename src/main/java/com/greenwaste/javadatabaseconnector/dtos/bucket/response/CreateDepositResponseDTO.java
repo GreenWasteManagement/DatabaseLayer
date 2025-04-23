@@ -1,15 +1,13 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.response;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateDepositResponseDTO {
     private Instant depositTimestamp;
 }

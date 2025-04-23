@@ -1,9 +1,24 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.AddressDTO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Data
 public class UpdateAddressRequestDTO {
-    private AddressDTO address;
+
+    private Address address;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Address {
+        private Long id;
+        private String floorDetails;
+        private Integer floorNumber;
+        private Integer doorNumber;
+        private String street;
+    }
 }

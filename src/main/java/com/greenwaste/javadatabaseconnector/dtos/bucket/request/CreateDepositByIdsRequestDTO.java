@@ -1,16 +1,12 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class CreateDepositByIdsRequestDTO {
     private Long municipalityId;
     private Long containerId;

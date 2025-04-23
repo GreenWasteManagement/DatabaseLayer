@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.service;
 
-import com.greenwaste.javadatabaseconnector.dtos.user.request.LoginRequestDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;
 import com.greenwaste.javadatabaseconnector.service.exceptions.UsernameNotFoundException;
@@ -40,8 +39,10 @@ public class UserService {
     // Begin of methods Cluster of many tables
     // Missing validation of postal code being equal or create a new one if not exists.
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Admin createAdmin(User user, Admin admin, Address address, PostalCode postalCode) {
+
+        System.out.println(postalCode.getCounty());
 
         postalCodeRepository.save(postalCode);
 
@@ -303,10 +304,10 @@ public class UserService {
     }
 
 
-    public String login(LoginRequestDTO request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
+    public String login(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
 
-        if (!bcryptService.matches(request.getPassword(), user.getPassword())) {
+        if (!bcryptService.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Senha inválida");
         }
 

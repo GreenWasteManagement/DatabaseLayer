@@ -1,9 +1,22 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.AdminDTO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Data
 public class UpdateAdminRequestDTO {
-    private AdminDTO admin;
+
+    private Admin admin;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Admin {
+        private Long id;
+        private String citizenCardCode;
+        private Long userId;
+    }
 }

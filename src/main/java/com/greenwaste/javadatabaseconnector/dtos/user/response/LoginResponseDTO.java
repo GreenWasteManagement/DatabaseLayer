@@ -1,12 +1,10 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class LoginResponseDTO {
     private String token;
 }

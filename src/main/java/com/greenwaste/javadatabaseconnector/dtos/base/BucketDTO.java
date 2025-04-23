@@ -1,7 +1,5 @@
 package com.greenwaste.javadatabaseconnector.dtos.base;
 
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +7,12 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Data
 public class BucketDTO {
 
     private Long id;
+
     private BigDecimal capacity;
+
     private Boolean isAssociated;
 
 }
-
-
-

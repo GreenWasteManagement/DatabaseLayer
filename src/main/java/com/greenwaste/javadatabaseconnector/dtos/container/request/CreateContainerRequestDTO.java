@@ -1,14 +1,12 @@
 package com.greenwaste.javadatabaseconnector.dtos.container.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateContainerRequestDTO {
     private BigDecimal capacity;
     private BigDecimal currentVolumeLevel;

@@ -1,9 +1,23 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Data
 public class UpdateMunicipalityRequestDTO {
-    private MunicipalityDTO municipality;
+
+    private Municipality municipality;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Municipality {
+        private Long id;
+        private Long userId;
+        private String citizenCardCode;
+        private String nif;
+    }
 }

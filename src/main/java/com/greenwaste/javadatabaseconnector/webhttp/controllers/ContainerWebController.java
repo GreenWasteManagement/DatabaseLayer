@@ -2,63 +2,105 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
 import com.greenwaste.javadatabaseconnector.dtos.container.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.container.response.*;
+import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.service.ContainerService;
-import com.greenwaste.javadatabaseconnector.mapper.ContainerDTOMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/containers")
 public class ContainerWebController {
 
     private final ContainerService containerService;
-    private final ContainerDTOMapper containerDTOMapper;
 
-    public ContainerWebController(ContainerService containerService, ContainerDTOMapper containerDTOMapper) {
+    public ContainerWebController(ContainerService containerService) {
         this.containerService = containerService;
-        this.containerDTOMapper = containerDTOMapper;
     }
 
     @PostMapping("/get")
     public ResponseEntity<GetContainerByIdResponseDTO> getContainerById(@RequestBody GetContainerByIdRequestDTO requestDTO) {
         var container = containerService.getContainerById(requestDTO.getId());
-        var responseDTO = containerDTOMapper.toGetByIdResponse(container);
+
+        ModelMapper modelMapper = new ModelMapper();
+        GetContainerByIdResponseDTO.Container containerDTO = modelMapper.map(container, GetContainerByIdResponseDTO.Container.class);
+
+        GetContainerByIdResponseDTO responseDTO = new GetContainerByIdResponseDTO();
+        responseDTO.setContainer(containerDTO);
+
         return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping
     public ResponseEntity<GetAllContainersResponseDTO> getAllContainers() {
         var containers = containerService.getAllContainers();
-        var responseDTO = containerDTOMapper.toGetAllResponse(containers);
+
+        ModelMapper modelMapper = new ModelMapper();
+        List<GetAllContainersResponseDTO.Container> containerDTOs = containers.stream().map(container -> modelMapper.map(container, GetAllContainersResponseDTO.Container.class)).toList();
+
+        GetAllContainersResponseDTO responseDTO = new GetAllContainersResponseDTO();
+        responseDTO.setContainers(containerDTOs);
+
         return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping
     public ResponseEntity<CreateContainerResponseDTO> createContainer(@RequestBody CreateContainerRequestDTO requestDTO) {
-        var container = containerDTOMapper.fromCreateRequest(requestDTO);
-        var saved = containerService.createContainer(container);
-        var responseDTO = containerDTOMapper.toCreateResponse(saved);
+        ModelMapper modelMapper = new ModelMapper();
+
+        Container container = modelMapper.map(requestDTO, Container.class);
+
+        Container saved = containerService.createContainer(container);
+
+        CreateContainerResponseDTO.Container responseContainer = modelMapper.map(saved, CreateContainerResponseDTO.Container.class);
+        CreateContainerResponseDTO responseDTO = new CreateContainerResponseDTO();
+        responseDTO.setContainer(responseContainer);
+
         return ResponseEntity.ok(responseDTO);
     }
 
+
     @PutMapping("/update")
     public ResponseEntity<UpdateContainerResponseDTO> updateContainer(@RequestBody UpdateContainerRequestDTO dto) {
-        var containerToUpdate = containerDTOMapper.toContainer(dto.getContainer());
+        ModelMapper modelMapper = new ModelMapper();
+
+        Container containerToUpdate = modelMapper.map(dto.getContainer(), Container.class);
+
         containerService.updateContainer(containerToUpdate);
-        return ResponseEntity.ok(new UpdateContainerResponseDTO("Container updated successfully."));
+
+        UpdateContainerResponseDTO responseDTO = new UpdateContainerResponseDTO();
+        responseDTO.setMessage("Container updated successfully.");
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<DeleteContainerResponseDTO> deleteContainer(@RequestBody DeleteContainerRequestDTO dto) {
-        containerService.deleteContainer(dto.getId());
-        return ResponseEntity.ok(new DeleteContainerResponseDTO("Container deleted successfully."));
+        ModelMapper modelMapper = new ModelMapper();
+
+
+        Long id = dto.getId();
+
+        containerService.deleteContainer(id);
+
+        DeleteContainerResponseDTO responseDTO = new DeleteContainerResponseDTO();
+        responseDTO.setMessage("Container deleted successfully.");
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/unloading")
     public ResponseEntity<ContainerUnloadingResponseDTO> containerUnloading(@RequestBody ContainerUnloadingRequestDTO dto) {
-        ContainerUnloading unloading = containerService.containerUnloading(dto.getSmasId(), dto.getContainerId());
-        var response = containerDTOMapper.toUnloadingResponse(unloading);
-        return ResponseEntity.ok(response);
+        ModelMapper modelMapper = new ModelMapper();
+
+        Long smasId = dto.getSmasId();
+        Long containerId = dto.getContainerId();
+
+        ContainerUnloading unloading = containerService.containerUnloading(smasId, containerId);
+
+        ContainerUnloadingResponseDTO responseDTO = modelMapper.map(unloading, ContainerUnloadingResponseDTO.class);
+
+        return ResponseEntity.ok(responseDTO);
     }
 }

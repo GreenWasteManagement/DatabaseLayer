@@ -1,15 +1,26 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.response;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.BucketMunicipalityDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 
+@Getter
+@Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class GetAllBucketMunicipalitiesResponseDTO {
-    private List<BucketMunicipalityDTO> bucketMunicipalities;
+    private List<BucketMunicipality> bucketMunicipalities;
+
+    @Getter
+    @Setter
+    @Data
+    public static class BucketMunicipality {
+        private Long id;
+        private Long userId;
+        private Long bucketId;
+        private Instant timestampOfAssociation;
+        private Boolean status;
+    }
 }

@@ -1,13 +1,25 @@
 package com.greenwaste.javadatabaseconnector.dtos.container.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.ContainerDTO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data
+import java.math.BigDecimal;
+
 @Getter
 @Setter
+@Data
 public class UpdateContainerRequestDTO {
-    private ContainerDTO container;
+    private Container container;
+
+    @Getter
+    @Setter
+    @Data
+    public static class Container {
+        private Long id;
+        private BigDecimal capacity;
+        private String localization;
+        private BigDecimal currentVolumeLevel;
+    }
 }
+
