@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -190,9 +191,11 @@ public class UserService {
 
     @Transactional
     public void updateSmas(Smas updatedSmas) {
-        if (updatedSmas.getId() == null) return;
+        if (updatedSmas.getId() == null) {
+            throw new IllegalArgumentException("The SMAS ID cannot be null.");
+        }
 
-        smasRepository.findById(updatedSmas.getId()).ifPresent(existingSmas -> {
+        smasRepository.findById(updatedSmas.getId()).ifPresentOrElse(existingSmas -> {
 
             if (updatedSmas.getCitizenCardCode() != null && !updatedSmas.getCitizenCardCode().equals(existingSmas.getCitizenCardCode())) {
                 existingSmas.setCitizenCardCode(updatedSmas.getCitizenCardCode());
@@ -207,8 +210,12 @@ public class UserService {
             }
 
             smasRepository.save(existingSmas);
+
+        }, () -> {
+            throw new IllegalArgumentException("SMAS with the provided ID not found.");
         });
     }
+
 
     @Transactional
     public void updateMunicipality(Municipality updatedMunicipality) {
@@ -279,7 +286,10 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Admin getAdminById(Long id) {
-        return adminRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
+        Admin admin = adminRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
+
+        System.out.println("Fetched Admin: " + admin); // Ou usa logger.info(...)
+        return admin;
     }
 
     /**
@@ -287,7 +297,10 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Smas getSmasById(Long id) {
-        return smasRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
+        Smas smas = smasRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
+
+        System.out.println("Fetched SMAS: " + smas);
+        return smas;
     }
 
     /**
@@ -295,7 +308,31 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Municipality getMunicipalityById(Long id) {
-        return municipalityRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
+        Municipality municipality = municipalityRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
+
+        System.out.println("Fetched Municipality: " + municipality);
+        return municipality;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Admin> getAllAdmins() {
+        List<Admin> admins = adminRepository.findAll();
+        admins.forEach(admin -> System.out.println("Fetched Admin: " + admin));
+        return admins;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Smas> getAllSmas() {
+        List<Smas> smasList = smasRepository.findAll();
+        smasList.forEach(smas -> System.out.println("Fetched SMAS: " + smas));
+        return smasList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Municipality> getAllMunicipalities() {
+        List<Municipality> municipalities = municipalityRepository.findAll();
+        municipalities.forEach(municipality -> System.out.println("Fetched Municipality: " + municipality));
+        return municipalities;
     }
 
 

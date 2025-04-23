@@ -16,5 +16,12 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     })
     Optional<Admin> findWithAllDetailsById(Long id);
 
+    @EntityGraph(attributePaths = {
+            "user",
+            "user.address",
+            "user.address.postalCode"
+    })
+    List<Admin> findAll();
+
 
 }
