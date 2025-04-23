@@ -1,8 +1,5 @@
 package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.AdminDTO;
-import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
-import com.greenwaste.javadatabaseconnector.dtos.base.SmasDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
@@ -12,9 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -218,41 +213,138 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/get/admin")
-    public ResponseEntity<AdminDTO> getAdminById(@RequestBody GetAdminByIdRequestDTO dto) {
-        Admin admin = userService.getAdminById(dto.getId());
+    @PostMapping("/get/admin/{id}")
+    public ResponseEntity<GetAdminByIdResponseDTO> getAdminById(@PathVariable Long id) {
 
         ModelMapper modelMapper = new ModelMapper();
-        AdminDTO responseDTO = modelMapper.map(admin, AdminDTO.class);
+
+        User user = userService.getAdminById(id);
+
+        GetAdminByIdResponseDTO dto = new GetAdminByIdResponseDTO();
+
+        // Map internal classes
+        dto.setUser(modelMapper.map(user, GetAdminByIdResponseDTO.User.class));
+        dto.setAdmin(modelMapper.map(user.getAdmin(), GetAdminByIdResponseDTO.Admin.class));
+        dto.setAddress(modelMapper.map(user.getAddress(), GetAdminByIdResponseDTO.Address.class));
+        dto.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetAdminByIdResponseDTO.PostalCode.class));
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/get/smas{id}")
+    public ResponseEntity<GetSmasByIdResponseDTO> getSmasById(@PathVariable Long id) {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        Smas smas = userService.getSmasById(id).getSmas();
+        User user = smas.getUser();
+
+        GetSmasByIdResponseDTO responseDTO = new GetSmasByIdResponseDTO();
+
+        responseDTO.setUser(modelMapper.map(user, GetSmasByIdResponseDTO.User.class));
+
+        responseDTO.setSmas(modelMapper.map(smas, GetSmasByIdResponseDTO.Smas.class));
+
+        responseDTO.setAddress(modelMapper.map(user.getAddress(), GetSmasByIdResponseDTO.Address.class));
+        responseDTO.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetSmasByIdResponseDTO.PostalCode.class));
 
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/get/smas")
-    public ResponseEntity<SmasDTO> getSmasById(@RequestBody GetSmasByIdRequestDTO dto) {
-        Smas smas = userService.getSmasById(dto.getId());
+
+    @PostMapping("/get/municipality/{id}")
+    public ResponseEntity<GetMunicipalityByIdResponseDTO> getMunicipalityById(@PathVariable Long id) {
 
         ModelMapper modelMapper = new ModelMapper();
-        SmasDTO responseDTO = modelMapper.map(smas, SmasDTO.class);
+
+        Municipality municipality = userService.getMunicipalityById(id).getMunicipality();
+
+        User user = municipality.getUser();
+
+        GetMunicipalityByIdResponseDTO responseDTO = new GetMunicipalityByIdResponseDTO();
+
+        responseDTO.setUser(modelMapper.map(user, GetMunicipalityByIdResponseDTO.User.class));
+
+        responseDTO.setMunicipality(modelMapper.map(municipality, GetMunicipalityByIdResponseDTO.Municipality.class));
+
+        responseDTO.setAddress(modelMapper.map(user.getAddress(), GetMunicipalityByIdResponseDTO.Address.class));
+        responseDTO.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetMunicipalityByIdResponseDTO.PostalCode.class));
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/get/admins")
+    public ResponseEntity<GetAllAdminsResponseDTO> getAllAdmins() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<User> users = userService.getAllAdmins();
+
+        List<GetAllAdminsResponseDTO.AdminData> adminDataList = users.stream().map(user -> {
+            GetAllAdminsResponseDTO.AdminData adminData = new GetAllAdminsResponseDTO.AdminData();
+
+            adminData.setUser(modelMapper.map(user, GetAllAdminsResponseDTO.User.class));
+            adminData.setAdmin(modelMapper.map(user.getAdmin(), GetAllAdminsResponseDTO.Admin.class));
+            adminData.setAddress(modelMapper.map(user.getAddress(), GetAllAdminsResponseDTO.Address.class));
+            adminData.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetAllAdminsResponseDTO.PostalCode.class));
+
+            return adminData;
+        }).collect(Collectors.toList());
+
+        GetAllAdminsResponseDTO responseDTO = new GetAllAdminsResponseDTO();
+        responseDTO.setAdmins(adminDataList);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/get/smas")
+    public ResponseEntity<GetAllSmasResponseDTO> getAllSmas() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+
+        List<User> users = userService.getAllSmas();
+
+        List<GetAllSmasResponseDTO.SmasData> smasDataList = users.stream().map(user -> {
+            GetAllSmasResponseDTO.SmasData smasData = new GetAllSmasResponseDTO.SmasData();
+
+            smasData.setUser(modelMapper.map(user, GetAllSmasResponseDTO.User.class));
+            smasData.setSmas(modelMapper.map(user.getSmas(), GetAllSmasResponseDTO.Smas.class));
+            smasData.setAddress(modelMapper.map(user.getAddress(), GetAllSmasResponseDTO.Address.class));
+            smasData.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetAllSmasResponseDTO.PostalCode.class));
+
+            return smasData;
+        }).collect(Collectors.toList());
+
+        GetAllSmasResponseDTO responseDTO = new GetAllSmasResponseDTO();
+        responseDTO.setSmasList(smasDataList);
 
         return ResponseEntity.ok(responseDTO);
     }
 
 
-    @PostMapping("/get/municipality")
-    public ResponseEntity<MunicipalityDTO> getMunicipalityById(@RequestBody GetMunicipalityByIdRequestDTO dto) {
-        Municipality municipality = userService.getMunicipalityById(dto.getId());
-
+    @GetMapping("/get/municipalities")
+    public ResponseEntity<GetAllMunicipalitiesResponseDTO> getAllMunicipalities() {
         ModelMapper modelMapper = new ModelMapper();
-        MunicipalityDTO responseDTO = modelMapper.map(municipality, MunicipalityDTO.class);
 
-        Set<Long> bucketMunicipalityIds = municipality.getBucketMunicipalities() == null ? Collections.emptySet() : municipality.getBucketMunicipalities().stream().map(BucketMunicipality::getId).collect(Collectors.toSet());
+        List<User> users = userService.getAllMunicipalities();
 
-        responseDTO.setBucketMunicipalityIds(bucketMunicipalityIds);
+        List<GetAllMunicipalitiesResponseDTO.MunicipalityData> municipalityDataList = users.stream().map(user -> {
+            GetAllMunicipalitiesResponseDTO.MunicipalityData municipalityData = new GetAllMunicipalitiesResponseDTO.MunicipalityData();
+
+            municipalityData.setUser(modelMapper.map(user, GetAllMunicipalitiesResponseDTO.User.class));
+            municipalityData.setMunicipality(modelMapper.map(user.getMunicipality(), GetAllMunicipalitiesResponseDTO.Municipality.class));
+            municipalityData.setAddress(modelMapper.map(user.getAddress(), GetAllMunicipalitiesResponseDTO.Address.class));
+            municipalityData.setPostalCode(modelMapper.map(user.getAddress().getPostalCode(), GetAllMunicipalitiesResponseDTO.PostalCode.class));
+
+            return municipalityData;
+        }).collect(Collectors.toList());
+
+        GetAllMunicipalitiesResponseDTO responseDTO = new GetAllMunicipalitiesResponseDTO();
+        responseDTO.setMunicipalities(municipalityDataList);
 
         return ResponseEntity.ok(responseDTO);
     }
-
 
 
 }

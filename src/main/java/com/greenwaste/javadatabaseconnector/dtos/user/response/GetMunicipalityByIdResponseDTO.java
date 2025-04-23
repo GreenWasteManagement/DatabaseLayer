@@ -20,7 +20,7 @@ public class GetMunicipalityByIdResponseDTO {
     public static class User {
         private String name;
         private String username;
-        private String password;
+        //private String password;
         private String email;
         private String phoneNumber;
         private String role;

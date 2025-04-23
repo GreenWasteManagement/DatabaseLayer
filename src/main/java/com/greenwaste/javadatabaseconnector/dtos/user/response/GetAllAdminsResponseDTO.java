@@ -1,19 +1,26 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.response;
 
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Data
-public class GetSmasByIdResponseDTO {
+public class GetAllAdminsResponseDTO {
+    private List<AdminData> admins;
 
-    private User user;
-    private Smas smas;
-    private Address address;
-    private PostalCode postalCode;
+    @Getter
+    @Setter
+    @Data
+    public static class AdminData {
+        private User user;
+        private Admin admin;
+        private Address address;
+        private PostalCode postalCode;
+    }
 
     @Getter
     @Setter
@@ -30,9 +37,7 @@ public class GetSmasByIdResponseDTO {
     @Getter
     @Setter
     @Data
-    public static class Smas {
-        private String position;
-        private String employeeCode;
+    public static class Admin {
         private String citizenCardCode;
     }
 

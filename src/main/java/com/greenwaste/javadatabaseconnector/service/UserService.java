@@ -285,56 +285,55 @@ public class UserService {
      * Admin + User + Address + PostalCode
      */
     @Transactional(readOnly = true)
-    public Admin getAdminById(Long id) {
-        Admin admin = adminRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
-
-        System.out.println("Fetched Admin: " + admin); // Ou usa logger.info(...)
-        return admin;
+    public User getAdminById(Long id) {
+        return userRepository.findUserWithAdminDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + id));
     }
 
     /**
      * SMAS + User + Address + PostalCode
      */
     @Transactional(readOnly = true)
-    public Smas getSmasById(Long id) {
-        Smas smas = smasRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
-
-        System.out.println("Fetched SMAS: " + smas);
-        return smas;
+    public User getSmasById(Long id) {
+        return userRepository.findUserWithSmasDetailsById(id).orElseThrow(() -> new EntityNotFoundException("SMAS not found with id: " + id));
     }
 
     /**
      * Municipality + User + Address + PostalCode
      */
     @Transactional(readOnly = true)
-    public Municipality getMunicipalityById(Long id) {
-        Municipality municipality = municipalityRepository.findWithAllDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
-
-        System.out.println("Fetched Municipality: " + municipality);
-        return municipality;
+    public User getMunicipalityById(Long id) {
+        return userRepository.findUserWithMunicipalityDetailsById(id).orElseThrow(() -> new EntityNotFoundException("Municipality not found with id: " + id));
     }
 
+    /**
+     * Admin + User + Address + PostalCode (all)
+     */
     @Transactional(readOnly = true)
-    public List<Admin> getAllAdmins() {
-        List<Admin> admins = adminRepository.findAll();
-        admins.forEach(admin -> System.out.println("Fetched Admin: " + admin));
-        return admins;
+    public List<User> getAllAdmins() {
+        List<User> users = userRepository.findAllWithAdminDetails();
+        users.forEach(user -> System.out.println("Fetched Admin: " + user));
+        return users;
     }
 
+    /**
+     * SMAS + User + Address + PostalCode (all)
+     */
     @Transactional(readOnly = true)
-    public List<Smas> getAllSmas() {
-        List<Smas> smasList = smasRepository.findAll();
-        smasList.forEach(smas -> System.out.println("Fetched SMAS: " + smas));
-        return smasList;
+    public List<User> getAllSmas() {
+        List<User> users = userRepository.findAllWithSmasDetails();
+        users.forEach(user -> System.out.println("Fetched SMAS: " + user));
+        return users;
     }
 
+    /**
+     * Municipality + User + Address + PostalCode (all)
+     */
     @Transactional(readOnly = true)
-    public List<Municipality> getAllMunicipalities() {
-        List<Municipality> municipalities = municipalityRepository.findAll();
-        municipalities.forEach(municipality -> System.out.println("Fetched Municipality: " + municipality));
-        return municipalities;
+    public List<User> getAllMunicipalities() {
+        List<User> users = userRepository.findAllWithMunicipalityDetails();
+        users.forEach(user -> System.out.println("Fetched Municipality: " + user));
+        return users;
     }
-
 
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
