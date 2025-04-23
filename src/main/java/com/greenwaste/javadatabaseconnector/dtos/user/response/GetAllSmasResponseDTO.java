@@ -26,6 +26,7 @@ public class GetAllSmasResponseDTO {
     @Setter
     @Data
     public static class User {
+        private Long id;
         private String name;
         private String username;
         //private String password;

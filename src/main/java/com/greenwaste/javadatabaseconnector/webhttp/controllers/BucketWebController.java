@@ -192,7 +192,7 @@ public class BucketWebController {
     }
 
 
-    @PostMapping("/with-response")
+    @PostMapping("/bucket-association")
     public ResponseEntity<CreateBucketAssociationResponseDTO> createAndReturn(@RequestBody CreateBucketAssociationRequestDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
 
@@ -202,6 +202,14 @@ public class BucketWebController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
+    @GetMapping("/buckets-deposits/count")
+    public ResponseEntity<BucketMunicipalityContainerCountResponseDTO> countAll() {
+        BucketMunicipalityContainerCountResponseDTO response = bucketService.countAllBucketMunicipalityContainers();
+        return ResponseEntity.ok(response);
+    }
+
+
 
 
 }

@@ -219,7 +219,6 @@ public class UserService {
         });
     }
 
-
     @Transactional
     public void updateMunicipality(Municipality updatedMunicipality) {
         if (updatedMunicipality.getId() != null) {

@@ -28,6 +28,7 @@ public class GetAllMunicipalitiesAndBucketsResponseDTO {
     @Setter
     @Data
     public static class User {
+        private Long id;
         private String name;
         private String username;
         //private String password;

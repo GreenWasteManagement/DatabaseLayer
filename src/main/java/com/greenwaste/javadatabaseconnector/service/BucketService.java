@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.bucket.response.BucketMunicipalityContainerCountResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.repository.*;
@@ -195,6 +196,12 @@ public class BucketService {
     }
 
 
+    public BucketMunicipalityContainerCountResponseDTO countAllBucketMunicipalityContainers() {
+        Long total = bucketMunicipalityContainerRepository.countAll();
+        BucketMunicipalityContainerCountResponseDTO dto = new BucketMunicipalityContainerCountResponseDTO();
+        dto.setSum(total);
+        return dto;
+    }
 
 /*
  @Transactional

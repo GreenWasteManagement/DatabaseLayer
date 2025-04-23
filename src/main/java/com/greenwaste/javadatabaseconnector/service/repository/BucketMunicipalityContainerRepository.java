@@ -20,4 +20,8 @@ public interface BucketMunicipalityContainerRepository extends JpaRepository<Buc
 """)
     List<BucketMunicipalityContainer> findAllActiveWithRelations();
 
+
+    @Query("SELECT COUNT(bmc) FROM BucketMunicipalityContainer bmc")
+    Long countAll();
+
 }
