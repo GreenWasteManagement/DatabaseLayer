@@ -36,37 +36,28 @@ public class ContainerWebController {
 
     @GetMapping
     public ResponseEntity<GetAllContainersResponseDTO> getAllContainers() {
-        // Buscar as entidades no service
         var containers = containerService.getAllContainers();
         var bucketMunicipalityContainers = containerService.getAllBucketMunicipalityContainers();
         var containerUnloadings = containerService.getAllContainerUnloadings();
 
-        // Usar ModelMapper para mapear as entidades para DTOs
         ModelMapper modelMapper = new ModelMapper();
 
-        // Mapear os containers para o DTO
         List<GetAllContainersResponseDTO.Container> containerDTOs = containers.stream().map(container -> {
-            // Mapear o container
             GetAllContainersResponseDTO.Container containerDTO = modelMapper.map(container, GetAllContainersResponseDTO.Container.class);
 
-            // Filtrar os BucketMunicipalityContainers associados a este container
             List<GetAllContainersResponseDTO.BucketMunicipalityContainer> bmcDTOs = bucketMunicipalityContainers.stream().filter(bmc -> bmc.getContainer().getId().equals(container.getId())).map(bmc -> modelMapper.map(bmc, GetAllContainersResponseDTO.BucketMunicipalityContainer.class)).toList();
 
-            // Filtrar os ContainerUnloadings associados a este container
             List<GetAllContainersResponseDTO.ContainerUnloading> unloadingDTOs = containerUnloadings.stream().filter(unloading -> unloading.getContainer().getId().equals(container.getId())).map(unloading -> modelMapper.map(unloading, GetAllContainersResponseDTO.ContainerUnloading.class)).toList();
 
-            // Associar as listas de depósitos e descarregamentos ao container
             containerDTO.setBucketMunicipalityContainers(bmcDTOs);
             containerDTO.setContainerUnloadings(unloadingDTOs);
 
             return containerDTO;
         }).toList();
 
-        // Criar a resposta DTO
         GetAllContainersResponseDTO responseDTO = new GetAllContainersResponseDTO();
         responseDTO.setContainers(containerDTOs);
 
-        // Retornar a resposta com status OK
         return ResponseEntity.ok(responseDTO);
     }
 
