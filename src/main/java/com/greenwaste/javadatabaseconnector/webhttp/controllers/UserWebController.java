@@ -22,7 +22,6 @@ public class UserWebController {
     private final UserService userService;
 
 
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         ModelMapper modelMapper = new ModelMapper();
@@ -38,15 +37,18 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
+
     @PostMapping("/create/admin")
     public ResponseEntity<CreateAdminResponseDTO> createAdmin(@RequestBody CreateAdminRequestDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
+
 
         User user = modelMapper.map(dto.getUser(), User.class);
         Admin admin = modelMapper.map(dto.getAdmin(), Admin.class);
         Address address = modelMapper.map(dto.getAddress(), Address.class);
         PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
 
+        user.setRole(User.user_role.valueOf("ADMIN"));
 
         System.out.println(postalCode.getCounty());
 
@@ -55,20 +57,18 @@ public class UserWebController {
         return ResponseEntity.ok().build();
     }
 
+
     @PostMapping("/create/municipality")
     public ResponseEntity<CreateMunicipalityResponseDTO> createMunicipality(@RequestBody CreateMunicipalityRequestDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
 
-        System.out.println(dto.getPostalCode().getCounty());
 
         var user = modelMapper.map(dto.getUser(), User.class);
         var municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
         var address = modelMapper.map(dto.getAddress(), Address.class);
         var postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
 
-        System.out.println(user.getEmail());
-        System.out.println(postalCode.getPostalCode());
-        System.out.println(postalCode.getCounty());
+        user.setRole(User.user_role.valueOf("MUNICIPALITY"));
 
         var savedMunicipality = userService.createMunicipality(user, municipality, address, postalCode);
 
@@ -77,6 +77,7 @@ public class UserWebController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/create/smas")
     public ResponseEntity<CreateSmasResponseDTO> createSmas(@RequestBody CreateSmasRequestDTO dto) {
@@ -87,6 +88,8 @@ public class UserWebController {
         var smas = modelMapper.map(dto.getSmas(), Smas.class);
         var address = modelMapper.map(dto.getAddress(), Address.class);
         var postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+
+        user.setRole(User.user_role.valueOf("SMAS"));
 
         var savedSmas = userService.createSmas(user, smas, address, postalCode);
 
@@ -170,6 +173,7 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
+
     @PutMapping("/update/postalcode")
     public ResponseEntity<UpdateSuccessResponseDTO> updatePostalCode(@RequestBody UpdatePostalCodeRequestDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
@@ -199,6 +203,7 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
+
     @DeleteMapping("/delete/postalcode")
     public ResponseEntity<UpdateSuccessResponseDTO> deletePostalCode(@RequestBody DeletePostalCodeRequestDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
@@ -212,6 +217,7 @@ public class UserWebController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/get/admin/{id}")
     public ResponseEntity<GetAdminByIdResponseDTO> getAdminById(@PathVariable Long id) {
@@ -230,6 +236,7 @@ public class UserWebController {
 
         return ResponseEntity.ok(dto);
     }
+
 
     @PostMapping("/get/smas/{id}")
     public ResponseEntity<GetSmasByIdResponseDTO> getSmasById(@PathVariable Long id) {
@@ -273,6 +280,7 @@ public class UserWebController {
         return ResponseEntity.ok(responseDTO);
     }
 
+
     @GetMapping("/get/admins")
     public ResponseEntity<GetAllAdminsResponseDTO> getAllAdmins() {
 
@@ -296,6 +304,7 @@ public class UserWebController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @GetMapping("/get/smas")
     public ResponseEntity<GetAllSmasResponseDTO> getAllSmas() {

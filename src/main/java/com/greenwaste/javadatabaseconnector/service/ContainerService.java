@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.service;
 
-import com.greenwaste.javadatabaseconnector.dtos.container.response.GetAllContainersResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipalityContainer;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
@@ -101,12 +100,16 @@ public class ContainerService {
         return null;
     }
 
+    @Transactional
     public List<BucketMunicipalityContainer> getAllBucketMunicipalityContainers() {
-        return bucketMunicipalityContainerRepository.findAll();  // ou uma consulta personalizada, dependendo da lógica
+        return bucketMunicipalityContainerRepository.findAll();
     }
 
+    @Transactional
     public List<ContainerUnloading> getAllContainerUnloadings() {
-        return containerUnloadingRepository.findAll();  // ou uma consulta personalizada
+        return containerUnloadingRepository.findAll();
     }
+
+
 
 }

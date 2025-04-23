@@ -118,4 +118,18 @@ public class ContainerWebController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
+
+    @GetMapping("/unloadings")
+    public ResponseEntity<List<GetAllContainersUnloadingResponseDTO>> getAllContainerUnloadings() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        var unloadings = containerService.getAllContainerUnloadings();
+
+        List<GetAllContainersUnloadingResponseDTO> unloadingDTOs = unloadings.stream().map(unloading -> modelMapper.map(unloading, GetAllContainersUnloadingResponseDTO.class)).toList();
+
+        return ResponseEntity.ok(unloadingDTOs);
+    }
+
 }
