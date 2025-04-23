@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -239,11 +241,11 @@ public class UserWebController {
         Municipality municipality = userService.getMunicipalityById(dto.getId());
 
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.typeMap(Municipality.class, MunicipalityDTO.class).addMappings(mapper -> {
-            mapper.map(src -> src.getBucketMunicipalities().stream().map(BucketMunicipality::getId).collect(Collectors.toSet()), MunicipalityDTO::setBucketMunicipalityIds);
-        });
-
         MunicipalityDTO responseDTO = modelMapper.map(municipality, MunicipalityDTO.class);
+
+        Set<Long> bucketMunicipalityIds = municipality.getBucketMunicipalities() == null ? Collections.emptySet() : municipality.getBucketMunicipalities().stream().map(BucketMunicipality::getId).collect(Collectors.toSet());
+
+        responseDTO.setBucketMunicipalityIds(bucketMunicipalityIds);
 
         return ResponseEntity.ok(responseDTO);
     }

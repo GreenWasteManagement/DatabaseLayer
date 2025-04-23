@@ -7,6 +7,7 @@ import com.greenwaste.javadatabaseconnector.service.repository.*;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtcreator.JwtService;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.passwordmanager.BCryptService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,9 @@ public class UserService {
     private final PostalCodeRepository postalCodeRepository;
     private final BCryptService bcryptService;
     private final JwtService jwtService;
+    private final BCryptService bCryptService;
 
-    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService) {
+    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService, BCryptService bCryptService) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
         this.smasRepository = smasRepository;
@@ -33,6 +35,7 @@ public class UserService {
         this.postalCodeRepository = postalCodeRepository;
         this.bcryptService = bcryptService;
         this.jwtService = jwtService;
+        this.bCryptService = bCryptService;
     }
 
 
@@ -41,6 +44,8 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public Admin createAdmin(User user, Admin admin, Address address, PostalCode postalCode) {
+
+        user.setPassword(bCryptService.encode(user.getPassword()));
 
         System.out.println(postalCode.getCounty());
 
@@ -65,6 +70,8 @@ public class UserService {
     @Transactional
     public Municipality createMunicipality(User user, Municipality municipality, Address address, PostalCode postalCode) {
 
+        user.setPassword(bCryptService.encode(user.getPassword()));
+
         postalCodeRepository.save(postalCode);
 
         // Associations Between Elements
@@ -87,6 +94,8 @@ public class UserService {
     @Transactional
     public Smas createSmas(User user, Smas smas, Address address, PostalCode postalCode) {
 
+        user.setPassword(bCryptService.encode(user.getPassword()));
+
         postalCodeRepository.save(postalCode);
 
         // Associations Between Elements
@@ -107,6 +116,9 @@ public class UserService {
 
     @Transactional
     public void updateUser(User updatedUser) {
+
+        // Missing the verification of
+
 
         Optional<User> userOptional = userRepository.findById(updatedUser.getId());
 
