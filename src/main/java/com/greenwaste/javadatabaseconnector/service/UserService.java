@@ -199,6 +199,7 @@ public class UserService {
         }
     }
 
+
     @Transactional
     public void updateUser(User updatedUser) {
         Optional<User> userOptional = userRepository.findById(updatedUser.getId());
