@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector.service.repository;
 
+import com.greenwaste.javadatabaseconnector.dtos.user.response.CountMunicipalityUsersResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -76,6 +77,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             WHERE u.role = 'MUNICIPALITY' AND u.id = :id
             """)
     Optional<User> findUserWithMunicipalityDetailsById(@Param("id") Long id);
+
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role = 'MUNICIPALITY'")
+    Long countMunicipalityUsers();
+
 
     /*
     /// Admin

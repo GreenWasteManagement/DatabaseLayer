@@ -3,6 +3,7 @@ package com.greenwaste.javadatabaseconnector.service;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateAdminRequestDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateMunicipalityRequestDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateSmasRequestDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.CountMunicipalityUsersResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;
@@ -459,6 +460,12 @@ public class UserService {
         return response;
     }
 
+    public CountMunicipalityUsersResponseDTO getCountMunicipalityUsers() {
+        long count = userRepository.countMunicipalityUsers();
+        CountMunicipalityUsersResponseDTO response = new CountMunicipalityUsersResponseDTO();
+        response.setCount(count);
+        return response;
+    }
 
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));

@@ -304,4 +304,11 @@ public class UserWebController {
         GetAllMunicipalitiesAndBucketsResponseDTO response = userService.getAllMunicipalitiesWithActiveBuckets();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/count/municipality")
+    public ResponseEntity<CountMunicipalityUsersResponseDTO> getCountMunicipalityUsers() {
+        CountMunicipalityUsersResponseDTO responseDTO = userService.getCountMunicipalityUsers();
+        return ResponseEntity.ok(responseDTO);
+    }
+
 }
