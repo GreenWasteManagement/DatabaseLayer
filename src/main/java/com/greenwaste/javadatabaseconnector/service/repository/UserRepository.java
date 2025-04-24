@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(Long id);
 
+    Optional<User> findByUsername(String userName);
+
     // Buscar todos com detalhes de ADMIN
     @Query("""
             SELECT u FROM User u
