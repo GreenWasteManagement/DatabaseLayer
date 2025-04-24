@@ -4,7 +4,6 @@ import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateAdminRequest
 import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateMunicipalityRequestDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateSmasRequestDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.CountMunicipalityUsersResponseDTO;
-import com.greenwaste.javadatabaseconnector.dtos.user.response.GetActiveBucketMunicipalityAssociationsResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;

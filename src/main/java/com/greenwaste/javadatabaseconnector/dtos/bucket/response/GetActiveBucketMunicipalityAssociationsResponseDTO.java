@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.user.response;
+package com.greenwaste.javadatabaseconnector.dtos.bucket.response;
 
 import lombok.Data;
 import lombok.Getter;
