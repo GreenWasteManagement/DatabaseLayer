@@ -21,7 +21,7 @@ public class GetAllMunicipalitiesAndBucketsResponseDTO {
         private Municipality municipality;
         private Address address;
         private PostalCode postalCode;
-        private List<Bucket> buckets; // <- Adicionado aqui
+        private List<Bucket> buckets;
     }
 
     @Getter

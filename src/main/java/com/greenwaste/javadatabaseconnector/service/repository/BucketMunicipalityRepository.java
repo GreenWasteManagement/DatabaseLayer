@@ -4,6 +4,7 @@ import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.model.Municipality;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,12 @@ public interface BucketMunicipalityRepository extends JpaRepository<BucketMunici
 
     Optional<BucketMunicipality> findFirstByUserAndStatusTrue(Municipality user);
 
-    @EntityGraph(attributePaths = {"bucket", "user","user.user"})
+    @Query("""
+                SELECT bm FROM BucketMunicipality bm
+                JOIN FETCH bm.bucket
+                JOIN FETCH bm.user u
+                JOIN FETCH u.user
+                WHERE bm.status = true
+            """)
     List<BucketMunicipality> findByStatusTrue();
 }

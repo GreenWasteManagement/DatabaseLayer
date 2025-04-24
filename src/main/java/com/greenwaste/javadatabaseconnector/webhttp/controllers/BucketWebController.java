@@ -2,17 +2,15 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
 import com.greenwaste.javadatabaseconnector.dtos.bucket.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
-import com.greenwaste.javadatabaseconnector.dtos.bucket.response.GetActiveBucketMunicipalityAssociationsResponseDTO;
-import com.greenwaste.javadatabaseconnector.model.Bucket;
-import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
-import com.greenwaste.javadatabaseconnector.model.Container;
-import com.greenwaste.javadatabaseconnector.model.Municipality;
+import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -214,6 +212,58 @@ public class BucketWebController {
     public ResponseEntity<List<GetActiveBucketMunicipalityAssociationsResponseDTO>> getActiveAssociations() {
         List<GetActiveBucketMunicipalityAssociationsResponseDTO> result = bucketService.getActiveAssociations();
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/deposits/municipality")
+    public ResponseEntity<List<GetMunicipalityDepositsResponseDTO>> getDeposits() {
+
+        List<BucketMunicipalityContainer> deposits = bucketService.getAllDepositsForMunicipality();
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        // Garantir que bucket, municipality e container sejam instanciados
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+
+        // Mapeamento customizado para campos aninhados
+        TypeMap<BucketMunicipalityContainer, GetMunicipalityDepositsResponseDTO> typeMap =
+                modelMapper.createTypeMap(BucketMunicipalityContainer.class, GetMunicipalityDepositsResponseDTO.class);
+
+        typeMap.setProvider(request -> {
+            GetMunicipalityDepositsResponseDTO dto = new GetMunicipalityDepositsResponseDTO();
+            dto.setBucket(new GetMunicipalityDepositsResponseDTO.Bucket());
+            dto.setMunicipality(new GetMunicipalityDepositsResponseDTO.Municipality());
+            dto.setContainer(new GetMunicipalityDepositsResponseDTO.Container());
+            return dto;
+        });
+
+        typeMap.addMappings(mapper -> {
+            mapper.map(BucketMunicipalityContainer::getId, GetMunicipalityDepositsResponseDTO::setDepositId);
+            mapper.map(BucketMunicipalityContainer::getDepositAmount, GetMunicipalityDepositsResponseDTO::setDepositAmount);
+            mapper.map(BucketMunicipalityContainer::getDepositTimestamp, GetMunicipalityDepositsResponseDTO::setDepositTimestamp);
+
+            // Bucket
+            mapper.map(src -> src.getAssociation().getBucket().getId(), (dest, v) -> dest.getBucket().setId((Long) v));
+            mapper.map(src -> src.getAssociation().getBucket().getCapacity(), (dest, v) -> dest.getBucket().setCapacity((BigDecimal) v));
+            mapper.map(src -> src.getAssociation().getBucket().getIsAssociated(), (dest, v) -> dest.getBucket().setIsAssociated((Boolean) v));
+
+            // Municipality (user)
+            mapper.map(src -> src.getAssociation().getUser().getId(), (dest, v) -> dest.getMunicipality().setId((Long) v));
+            mapper.map(src -> src.getAssociation().getUser().getId(), (dest, v) -> dest.getMunicipality().setUserId((Long) v));
+            mapper.map(src -> src.getAssociation().getUser().getCitizenCardCode(), (dest, v) -> dest.getMunicipality().setCitizenCardCode((String) v));
+            mapper.map(src -> src.getAssociation().getUser().getNif(), (dest, v) -> dest.getMunicipality().setNif((String) v));
+
+            // Container
+            mapper.map(src -> src.getContainer().getId(), (dest, v) -> dest.getContainer().setId((Long) v));
+            mapper.map(src -> src.getContainer().getCapacity(), (dest, v) -> dest.getContainer().setCapacity((BigDecimal) v));
+            mapper.map(src -> src.getContainer().getLocalization(), (dest, v) -> dest.getContainer().setLocalization((String) v));
+            mapper.map(src -> src.getContainer().getCurrentVolumeLevel(), (dest, v) -> dest.getContainer().setCurrentVolumeLevel((BigDecimal) v));
+        });
+
+        List<GetMunicipalityDepositsResponseDTO> response = deposits.stream()
+                .map(deposit -> modelMapper.map(deposit, GetMunicipalityDepositsResponseDTO.class))
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
 

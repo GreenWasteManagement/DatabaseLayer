@@ -214,6 +214,13 @@ public class BucketService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<BucketMunicipalityContainer> getAllDepositsForMunicipality() {
+        return bucketMunicipalityContainerRepository.findAllByMunicipalityIdWithActiveAssociation();
+    }
+
+
+
 /*
  @Transactional
     public BucketMunicipalityContainer createDepositAndGet(Long municipalityId, Long containerId, BigDecimal amount) {
