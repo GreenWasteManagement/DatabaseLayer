@@ -188,7 +188,6 @@ public class UserService {
             updateUserAddress(address);
         }
 
-
         if (dto.getMunicipality() != null) {
             Municipality municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
             updateMunicipality(municipality);
@@ -480,4 +479,7 @@ public class UserService {
         return jwtService.generateToken(user);
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found"));
+    }
 }

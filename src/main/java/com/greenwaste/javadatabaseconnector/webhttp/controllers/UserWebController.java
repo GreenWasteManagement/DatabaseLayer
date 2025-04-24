@@ -135,9 +135,10 @@ public class UserWebController {
 
     @DeleteMapping("/delete/user")
     public ResponseEntity<UpdateSuccessResponseDTO> deleteUser(@RequestBody DeleteUserRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
 
-        User user = modelMapper.map(dto.getUser(), User.class);
+        User user = userService.getUserById(dto.getId());
+
+        System.out.println(user.getName());
 
         userService.deleteUser(user);
 

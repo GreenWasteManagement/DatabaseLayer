@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @Data
 public class DeleteUserRequestDTO {
-    private UserDTO user;
+    private Long id;
 }

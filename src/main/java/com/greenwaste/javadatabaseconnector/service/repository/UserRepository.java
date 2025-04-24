@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
+    Optional<User> findById(Long id);
 
     // Buscar todos com detalhes de ADMIN
     @Query("""
