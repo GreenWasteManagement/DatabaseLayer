@@ -2,6 +2,7 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
 import com.greenwaste.javadatabaseconnector.dtos.bucket.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.GetActiveBucketMunicipalityAssociationsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.Bucket;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipality;
 import com.greenwaste.javadatabaseconnector.model.Container;
@@ -209,7 +210,11 @@ public class BucketWebController {
         return ResponseEntity.ok(response);
     }
 
-
+    @GetMapping("buckets-associations/active")
+    public ResponseEntity<List<GetActiveBucketMunicipalityAssociationsResponseDTO>> getActiveAssociations() {
+        List<GetActiveBucketMunicipalityAssociationsResponseDTO> result = bucketService.getActiveAssociations();
+        return ResponseEntity.ok(result);
+    }
 
 
 }

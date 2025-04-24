@@ -1,6 +1,7 @@
 package com.greenwaste.javadatabaseconnector.service;
 
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.BucketMunicipalityContainerCountResponseDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.GetActiveBucketMunicipalityAssociationsResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.repository.*;
@@ -201,6 +202,17 @@ public class BucketService {
         BucketMunicipalityContainerCountResponseDTO dto = new BucketMunicipalityContainerCountResponseDTO();
         dto.setCount(total);
         return dto;
+    }
+
+    public List<GetActiveBucketMunicipalityAssociationsResponseDTO> getActiveAssociations() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<BucketMunicipality> entities = bucketMunicipalityRepository.findByStatusTrue();
+
+        return entities.stream()
+                .map(entity -> modelMapper.map(entity, GetActiveBucketMunicipalityAssociationsResponseDTO.class))
+                .toList();
     }
 
 /*

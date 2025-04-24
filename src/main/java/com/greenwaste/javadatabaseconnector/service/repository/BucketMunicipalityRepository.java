@@ -20,4 +20,7 @@ public interface BucketMunicipalityRepository extends JpaRepository<BucketMunici
     List<BucketMunicipality> findAll();
 
     Optional<BucketMunicipality> findFirstByUserAndStatusTrue(Municipality user);
+
+    @EntityGraph(attributePaths = {"bucket", "user","user.user"})
+    List<BucketMunicipality> findByStatusTrue();
 }
