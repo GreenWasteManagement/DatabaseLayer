@@ -16,5 +16,8 @@ public interface ContainerUnloadingRepository extends JpaRepository<ContainerUnl
     @Query("SELECT COUNT(cu) FROM ContainerUnloading cu")
     Long countAll();
 
+    @Query("SELECT SUM(cu.unloadedQuantity) FROM ContainerUnloading cu")
+    Long sumAllUnloadedQuantities();
+
 
 }

@@ -2,6 +2,7 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 
 import com.greenwaste.javadatabaseconnector.dtos.container.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.container.response.*;
+import com.greenwaste.javadatabaseconnector.dtos.user.response.TotalUnloadedQuantityResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
 import com.greenwaste.javadatabaseconnector.service.ContainerService;
@@ -136,6 +137,12 @@ public class ContainerWebController {
     public ResponseEntity<ContainerUnloadingCountResponseDTO> countAll() {
         ContainerUnloadingCountResponseDTO response = containerService.countAllContainerUnloadings();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-unloaded-quantity")
+    public ResponseEntity<TotalUnloadedQuantityResponseDTO> getTotalUnloadedQuantity() {
+        TotalUnloadedQuantityResponseDTO dto = containerService.getTotalUnloadedQuantity();
+        return ResponseEntity.ok(dto);
     }
 
 }
