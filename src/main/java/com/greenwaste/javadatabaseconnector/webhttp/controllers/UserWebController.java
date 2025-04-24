@@ -3,7 +3,6 @@ package com.greenwaste.javadatabaseconnector.webhttp.controllers;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
-import com.greenwaste.javadatabaseconnector.service.BucketService;
 import com.greenwaste.javadatabaseconnector.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -101,90 +100,34 @@ public class UserWebController {
     }
 
 
-    @PutMapping("/update")
-    public ResponseEntity<UpdateSuccessResponseDTO> updateUser(@RequestBody UpdateUserRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
+    // HERE UPDATES
 
-        User user = modelMapper.map(dto.getUser(), User.class);
-
-        userService.updateUser(user);
+    @PutMapping("/update-full-admin")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateFullAdmin(@RequestBody UpdateAdminRequestDTO dto) {
+        userService.updateFullAdmin(dto);
 
         UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("User updated successfully.");
+        responseDTO.setMessage("Admin atualizado com sucesso.");
 
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PutMapping("/update/address")
-    public ResponseEntity<UpdateSuccessResponseDTO> updateAddress(@RequestBody UpdateAddressRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        Address address = modelMapper.map(dto.getAddress(), Address.class);
-
-        userService.updateUserAddress(address);
+    @PutMapping("/update-full-smas")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateFullSmas(@RequestBody UpdateSmasRequestDTO dto) {
+        userService.updateFullSmas(dto);
 
         UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("Address updated successfully.");
+        responseDTO.setMessage("SMAS atualizado com sucesso.");
 
         return ResponseEntity.ok(responseDTO);
     }
 
-
-    @PutMapping("/update/admin")
-    public ResponseEntity<UpdateSuccessResponseDTO> updateAdmin(@RequestBody UpdateAdminRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        Admin admin = modelMapper.map(dto.getAdmin(), Admin.class);
-
-        userService.updateAdmin(admin);
+    @PutMapping("/update-full-municipality")
+    public ResponseEntity<UpdateSuccessResponseDTO> updateFullMunicipality(@RequestBody UpdateMunicipalityRequestDTO dto) {
+        userService.updateFullMunicipality(dto);
 
         UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("Admin updated successfully.");
-
-        return ResponseEntity.ok(responseDTO);
-    }
-
-
-    @PutMapping("/update/smas")
-    public ResponseEntity<UpdateSuccessResponseDTO> updateSmas(@RequestBody UpdateSmasRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        Smas smas = modelMapper.map(dto.getSmas(), Smas.class);
-
-        userService.updateSmas(smas);
-
-        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("SMAS updated successfully.");
-
-        return ResponseEntity.ok(responseDTO);
-    }
-
-
-    @PutMapping("/update/municipality")
-    public ResponseEntity<UpdateSuccessResponseDTO> updateMunicipality(@RequestBody UpdateMunicipalityRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        Municipality municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
-
-        userService.updateMunicipality(municipality);
-
-        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("Municipality updated successfully.");
-
-        return ResponseEntity.ok(responseDTO);
-    }
-
-
-    @PutMapping("/update/postalcode")
-    public ResponseEntity<UpdateSuccessResponseDTO> updatePostalCode(@RequestBody UpdatePostalCodeRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
-
-        userService.updatePostalCode(postalCode);
-
-        UpdateSuccessResponseDTO responseDTO = new UpdateSuccessResponseDTO();
-        responseDTO.setMessage("Postal code updated successfully.");
+        responseDTO.setMessage("Município atualizado com sucesso.");
 
         return ResponseEntity.ok(responseDTO);
     }

@@ -132,4 +132,10 @@ public class ContainerWebController {
         return ResponseEntity.ok(unloadingDTOs);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ContainerUnloadingCountResponseDTO> countAll() {
+        ContainerUnloadingCountResponseDTO response = containerService.countAllContainerUnloadings();
+        return ResponseEntity.ok(response);
+    }
+
 }

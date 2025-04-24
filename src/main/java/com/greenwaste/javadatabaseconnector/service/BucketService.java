@@ -199,7 +199,7 @@ public class BucketService {
     public BucketMunicipalityContainerCountResponseDTO countAllBucketMunicipalityContainers() {
         Long total = bucketMunicipalityContainerRepository.countAll();
         BucketMunicipalityContainerCountResponseDTO dto = new BucketMunicipalityContainerCountResponseDTO();
-        dto.setSum(total);
+        dto.setCount(total);
         return dto;
     }
 

@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.container.response.ContainerUnloadingCountResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.BucketMunicipalityContainer;
 import com.greenwaste.javadatabaseconnector.model.Container;
 import com.greenwaste.javadatabaseconnector.model.ContainerUnloading;
@@ -113,6 +114,11 @@ public class ContainerService {
         return containerUnloadingRepository.findAll();
     }
 
-
+    public ContainerUnloadingCountResponseDTO countAllContainerUnloadings() {
+        Long total = containerUnloadingRepository.countAll();
+        ContainerUnloadingCountResponseDTO dto = new ContainerUnloadingCountResponseDTO();
+        dto.setCount(total);
+        return dto;
+    }
 
 }

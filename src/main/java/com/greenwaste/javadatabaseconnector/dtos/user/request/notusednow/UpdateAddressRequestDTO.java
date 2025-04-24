@@ -1,4 +1,4 @@
-package com.greenwaste.javadatabaseconnector.dtos.user.request;
+package com.greenwaste.javadatabaseconnector.dtos.user.request.notusednow;
 
 import lombok.Data;
 import lombok.Getter;

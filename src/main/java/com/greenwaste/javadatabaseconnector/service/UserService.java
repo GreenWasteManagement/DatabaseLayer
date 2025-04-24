@@ -1,5 +1,8 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateAdminRequestDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateMunicipalityRequestDTO;
+import com.greenwaste.javadatabaseconnector.dtos.user.request.UpdateSmasRequestDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.response.GetAllMunicipalitiesAndBucketsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.exceptions.BadCredentialsException;
@@ -113,6 +116,87 @@ public class UserService {
 
         return user.getSmas();
 
+    }
+
+    // Acting as One
+
+    @Transactional
+    public void updateFullAdmin(UpdateAdminRequestDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        if (dto.getUser() != null) {
+            User user = modelMapper.map(dto.getUser(), User.class);
+            updateUser(user);
+        }
+
+        if (dto.getAddress() != null) {
+            Address address = modelMapper.map(dto.getAddress(), Address.class);
+            updateUserAddress(address);
+        }
+
+        if (dto.getAdmin() != null) {
+            Admin admin = modelMapper.map(dto.getAdmin(), Admin.class);
+            updateAdmin(admin);
+        }
+
+
+        if (dto.getPostalCode() != null) {
+            PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+            updatePostalCode(postalCode);
+        }
+    }
+
+    @Transactional
+    public void updateFullSmas(UpdateSmasRequestDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        if (dto.getUser() != null) {
+            User user = modelMapper.map(dto.getUser(), User.class);
+            updateUser(user);
+        }
+
+        if (dto.getAddress() != null) {
+            Address address = modelMapper.map(dto.getAddress(), Address.class);
+            updateUserAddress(address);
+        }
+
+
+        if (dto.getSmas() != null) {
+            Smas smas = modelMapper.map(dto.getSmas(), Smas.class);
+            updateSmas(smas);
+        }
+
+
+        if (dto.getPostalCode() != null) {
+            PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+            updatePostalCode(postalCode);
+        }
+    }
+
+    @Transactional
+    public void updateFullMunicipality(UpdateMunicipalityRequestDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        if (dto.getUser() != null) {
+            User user = modelMapper.map(dto.getUser(), User.class);
+            updateUser(user);
+        }
+
+        if (dto.getAddress() != null) {
+            Address address = modelMapper.map(dto.getAddress(), Address.class);
+            updateUserAddress(address);
+        }
+
+
+        if (dto.getMunicipality() != null) {
+            Municipality municipality = modelMapper.map(dto.getMunicipality(), Municipality.class);
+            updateMunicipality(municipality);
+        }
+
+        if (dto.getPostalCode() != null) {
+            PostalCode postalCode = modelMapper.map(dto.getPostalCode(), PostalCode.class);
+            updatePostalCode(postalCode);
+        }
     }
 
     @Transactional
@@ -269,6 +353,9 @@ public class UserService {
         }
     }
 
+    // End Of acting as One
+
+
     // No more delete methods because of Cascade deleting
     @Transactional
     public void deleteUser(User userToDelete) {
@@ -280,8 +367,6 @@ public class UserService {
         postalCodeRepository.deleteById(postalCodeToDelete.getId());
     }
 
-
-    //// Detailed Gets with all necessary Info:
 
     /**
      * Admin + User + Address + PostalCode
