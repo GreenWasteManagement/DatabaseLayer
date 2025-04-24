@@ -210,7 +210,7 @@ public class UserService {
 
         User existingUser = userOptional.get();
 
-        existingUser.setUsername(updatedUser.getName());
+        existingUser.setName(updatedUser.getName());
 
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(existingUser.getUsername())) {
             userRepository.findByUsername(updatedUser.getUsername()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
