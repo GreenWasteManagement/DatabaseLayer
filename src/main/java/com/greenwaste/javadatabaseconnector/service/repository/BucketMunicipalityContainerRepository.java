@@ -22,14 +22,13 @@ public interface BucketMunicipalityContainerRepository extends JpaRepository<Buc
 
 
     @Query("""
-    SELECT bmc FROM BucketMunicipalityContainer bmc
-    JOIN FETCH bmc.association bm
-    JOIN FETCH bm.bucket
-    JOIN FETCH bm.user m
-    JOIN FETCH m.user u
-    JOIN FETCH bmc.container
-    WHERE bm.status = true
-""")
+                SELECT bmc FROM BucketMunicipalityContainer bmc
+                JOIN FETCH bmc.association bm
+                JOIN FETCH bm.bucket
+                JOIN FETCH bm.user m
+                JOIN FETCH bmc.container
+                WHERE bm.status = true
+            """)
     List<BucketMunicipalityContainer> findAllByMunicipalityIdWithActiveAssociation();
 
     @Query("SELECT COUNT(bmc) FROM BucketMunicipalityContainer bmc")

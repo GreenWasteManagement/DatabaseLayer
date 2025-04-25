@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 
 @Getter
@@ -25,6 +26,7 @@ public class GetActiveBucketMunicipalityAssociationsResponseDTO {
         private Long userId;
         private String citizenCardCode;
         private String nif;
+        private Set<Long> bucketMunicipalityIds;
     }
 
     @Getter

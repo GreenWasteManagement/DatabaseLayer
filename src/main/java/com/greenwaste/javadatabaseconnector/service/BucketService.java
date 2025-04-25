@@ -219,7 +219,10 @@ public class BucketService {
         return bucketMunicipalityContainerRepository.findAllByMunicipalityIdWithActiveAssociation();
     }
 
-
+    @Transactional(readOnly = true)
+    public List<Bucket> getAllBucketsWithMunicipalityInfo() {
+        return bucketRepository.findAllBucketsWithMunicipalityInfo();
+    }
 
 /*
  @Transactional

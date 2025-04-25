@@ -221,10 +221,8 @@ public class BucketWebController {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        // Garantir que bucket, municipality e container sejam instanciados
         modelMapper.getConfiguration().setSkipNullEnabled(true);
 
-        // Mapeamento customizado para campos aninhados
         TypeMap<BucketMunicipalityContainer, GetMunicipalityDepositsResponseDTO> typeMap =
                 modelMapper.createTypeMap(BucketMunicipalityContainer.class, GetMunicipalityDepositsResponseDTO.class);
 
@@ -266,5 +264,46 @@ public class BucketWebController {
         return ResponseEntity.ok(response);
     }
 
+
+    @GetMapping("/with-municipalities")
+    public ResponseEntity<List<BucketWithMunicipalityInfoDTO>> getAllBucketsWithMunicipalityInfo() {
+        List<Bucket> buckets = bucketService.getAllBucketsWithMunicipalityInfo();
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<BucketWithMunicipalityInfoDTO> response = buckets.stream().map(bucket -> {
+            BucketWithMunicipalityInfoDTO dto = new BucketWithMunicipalityInfoDTO();
+            dto.setBucketId(bucket.getId());
+            dto.setCapacity(bucket.getCapacity());
+
+            List<BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO> bmDTOs = bucket.getBucketMunicipalities().stream().map(bm -> {
+                BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO bmDTO = new BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO();
+                bmDTO.setId(bm.getId());
+                bmDTO.setStatus(bm.getStatus());
+
+                BucketWithMunicipalityInfoDTO.MunicipalityDTO mDTO = new BucketWithMunicipalityInfoDTO.MunicipalityDTO();
+                mDTO.setId(bm.getUser().getId());
+                mDTO.setNif(bm.getUser().getNif());
+                mDTO.setCitizenCardCode(bm.getUser().getCitizenCardCode());
+
+                User user = bm.getUser().getUser();
+                if (user != null) {
+                    BucketWithMunicipalityInfoDTO.UserDTO userDTO = new BucketWithMunicipalityInfoDTO.UserDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setName(user.getName());
+                    userDTO.setEmail(user.getEmail());
+                    mDTO.setUser(userDTO);
+                }
+
+                bmDTO.setMunicipality(mDTO);
+                return bmDTO;
+            }).collect(Collectors.toList());
+
+            dto.setBucketMunicipalities(bmDTOs);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
 
 }
