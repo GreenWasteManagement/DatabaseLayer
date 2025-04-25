@@ -210,7 +210,13 @@ public class UserService {
 
         User existingUser = userOptional.get();
 
-        existingUser.setName(updatedUser.getName());
+        if (updatedUser.getName() != null && !updatedUser.getName().equals(existingUser.getName())) {
+            existingUser.setName(updatedUser.getName());
+        }
+
+        if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().equals(existingUser.getPhoneNumber())) {
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
 
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(existingUser.getUsername())) {
             userRepository.findByUsername(updatedUser.getUsername()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
@@ -222,13 +228,9 @@ public class UserService {
             }, () -> existingUser.setEmail(updatedUser.getEmail()));
         }
 
-        if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().equals(existingUser.getPhoneNumber())) {
-            userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).filter(u -> !u.getId().equals(existingUser.getId())).ifPresentOrElse(u -> {
-            }, () -> existingUser.setPhoneNumber(updatedUser.getPhoneNumber()));
-        }
-
         userRepository.save(existingUser);
     }
+
 
     @Transactional
     public void updateUserAddress(Address updatedAddress) {
