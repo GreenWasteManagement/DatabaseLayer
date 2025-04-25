@@ -10,6 +10,7 @@ public class BucketWithMunicipalityInfoDTO {
 
     private Long bucketId;
     private BigDecimal capacity;
+    private Boolean isAssociated;
     private List<BucketMunicipalityDTO> bucketMunicipalities;
 
     @Data

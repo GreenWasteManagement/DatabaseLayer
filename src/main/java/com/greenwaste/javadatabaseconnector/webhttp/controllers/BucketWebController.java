@@ -275,6 +275,7 @@ public class BucketWebController {
             BucketWithMunicipalityInfoDTO dto = new BucketWithMunicipalityInfoDTO();
             dto.setBucketId(bucket.getId());
             dto.setCapacity(bucket.getCapacity());
+            dto.setIsAssociated(bucket.getIsAssociated());
 
             List<BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO> bmDTOs = bucket.getBucketMunicipalities().stream().map(bm -> {
                 BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO bmDTO = new BucketWithMunicipalityInfoDTO.BucketMunicipalityDTO();
