@@ -1,5 +1,7 @@
 package com.greenwaste.javadatabaseconnector.service;
 
+import com.greenwaste.javadatabaseconnector.dtos.bucket.request.BucketFullUpdateRequestDTO;
+import com.greenwaste.javadatabaseconnector.dtos.bucket.response.BucketFullUpdateResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.BucketMunicipalityContainerCountResponseDTO;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.GetActiveBucketMunicipalityAssociationsResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.*;
@@ -11,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BucketService {
@@ -224,6 +228,87 @@ public class BucketService {
         return bucketRepository.findAllBucketsWithMunicipalityInfo();
     }
 
+    @Transactional
+    public BucketFullUpdateResponseDTO updateBucket(BucketFullUpdateRequestDTO dto) {
+        Optional<Bucket> bucketOpt = bucketRepository.findById(dto.getBucketId());
+        if (bucketOpt.isEmpty()) {
+            return null;
+        }
+
+        Bucket bucket = bucketOpt.get();
+
+        if (dto.getCapacity() != null && !dto.getCapacity().equals(bucket.getCapacity())) {
+            bucket.setCapacity(dto.getCapacity());
+        }
+        if (dto.getIsAssociated() != null && !dto.getIsAssociated().equals(bucket.getIsAssociated())) {
+            bucket.setIsAssociated(dto.getIsAssociated());
+        }
+
+        if (dto.getBucketMunicipalities() != null) {
+            for (var bmDto : dto.getBucketMunicipalities()) {
+                bucketMunicipalityRepository.findById(bmDto.getId()).ifPresent(bm -> {
+                    if (bmDto.getStatus() != null && !bmDto.getStatus().equals(bm.getStatus())) {
+                        bm.setStatus(bmDto.getStatus());
+                    }
+
+                    Municipality m = bm.getUser();
+                    var mDto = bmDto.getMunicipality();
+                    if (mDto != null) {
+                        if (mDto.getNif() != null && !mDto.getNif().equals(m.getNif())) {
+                            m.setNif(mDto.getNif());
+                        }
+                        if (mDto.getCitizenCardCode() != null && !mDto.getCitizenCardCode().equals(m.getCitizenCardCode())) {
+                            m.setCitizenCardCode(mDto.getCitizenCardCode());
+                        }
+
+                        var uDto = mDto.getUser();
+                        if (uDto != null) {
+                            User user = m.getUser();
+                            if (uDto.getName() != null && !uDto.getName().equals(user.getName())) {
+                                user.setName(uDto.getName());
+                            }
+                            if (uDto.getEmail() != null && !uDto.getEmail().equals(user.getEmail())) {
+                                user.setEmail(uDto.getEmail());
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        bucketRepository.save(bucket);
+
+        var resp = new BucketFullUpdateResponseDTO();
+        resp.setBucketId(bucket.getId());
+        resp.setCapacity(bucket.getCapacity());
+        resp.setIsAssociated(bucket.getIsAssociated());
+
+        var list = bucket.getBucketMunicipalities().stream().map(bm -> {
+            var r = new BucketFullUpdateResponseDTO.BucketMunicipalityResponse();
+            r.setId(bm.getId());
+            r.setStatus(bm.getStatus());
+
+            Municipality m = bm.getUser();
+            var mr = new BucketFullUpdateResponseDTO.MunicipalityResponse();
+            mr.setId(m.getId());
+            mr.setNif(m.getNif());
+            mr.setCitizenCardCode(m.getCitizenCardCode());
+
+            var ur = new BucketFullUpdateResponseDTO.UserResponse();
+            ur.setId(m.getUser().getId());
+            ur.setName(m.getUser().getName());
+            ur.setEmail(m.getUser().getEmail());
+            mr.setUser(ur);
+
+            r.setMunicipality(mr);
+            return r;
+        }).collect(Collectors.toList());
+
+        resp.setBucketMunicipalities(list);
+        return resp;
+    }
+
+}
 /*
  @Transactional
     public BucketMunicipalityContainer createDepositAndGet(Long municipalityId, Long containerId, BigDecimal amount) {
@@ -277,4 +362,5 @@ public class BucketService {
     }
 
  */
-}
+
+

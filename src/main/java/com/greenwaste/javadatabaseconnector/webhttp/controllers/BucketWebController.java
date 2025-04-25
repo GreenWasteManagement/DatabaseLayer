@@ -5,6 +5,7 @@ import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.http.ResponseEntity;
@@ -307,4 +308,12 @@ public class BucketWebController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update-full-bucket")
+    public ResponseEntity<BucketFullUpdateResponseDTO> updateBucket(@Valid @RequestBody BucketFullUpdateRequestDTO dto) {
+        BucketFullUpdateResponseDTO updated = bucketService.updateBucket(dto);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
 }
