@@ -76,6 +76,7 @@ public class BucketService {
         bucketRepository.deleteById(id);
     }
 
+
     /*
      * Deposit
      */
