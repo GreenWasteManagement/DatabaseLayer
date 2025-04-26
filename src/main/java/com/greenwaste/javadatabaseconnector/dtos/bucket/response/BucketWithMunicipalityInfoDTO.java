@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data // ou @Getter e @Setter
+@Data
 public class BucketWithMunicipalityInfoDTO {
 
     private Long bucketId;

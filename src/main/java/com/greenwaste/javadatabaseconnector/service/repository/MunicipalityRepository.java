@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.service.repository;
 
-import com.greenwaste.javadatabaseconnector.model.Admin;
 import com.greenwaste.javadatabaseconnector.model.Municipality;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

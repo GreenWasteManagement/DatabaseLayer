@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.service.repository;
 
-import com.greenwaste.javadatabaseconnector.dtos.user.response.CountMunicipalityUsersResponseDTO;
 import com.greenwaste.javadatabaseconnector.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String userName);
 
-    // Buscar todos com detalhes de ADMIN
+
     @Query("""
             SELECT u FROM User u
             JOIN u.admin a
@@ -31,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     List<User> findAllWithAdminDetails();
 
-    // Buscar todos com detalhes de SMAS
+
     @Query("""
             SELECT u FROM User u
             JOIN u.smas s
@@ -41,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     List<User> findAllWithSmasDetails();
 
-    // Buscar todos com detalhes de MUNICIPALITY
+
     @Query("""
             SELECT u FROM User u
             JOIN u.municipality m
@@ -51,7 +50,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     List<User> findAllWithMunicipalityDetails();
 
-    // Buscar um ADMIN por ID
     @Query("""
             SELECT u FROM User u
             JOIN u.admin a
@@ -61,7 +59,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     Optional<User> findUserWithAdminDetailsById(@Param("id") Long id);
 
-    // Buscar um SMAS por ID
+
     @Query("""
             SELECT u FROM User u
             JOIN u.smas s
@@ -71,7 +69,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     Optional<User> findUserWithSmasDetailsById(@Param("id") Long id);
 
-    // Buscar um MUNICIPALITY por ID
+
     @Query("""
             SELECT u FROM User u
             JOIN u.municipality m

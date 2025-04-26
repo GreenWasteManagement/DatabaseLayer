@@ -1,4 +1,3 @@
-
 BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS green_waste_management;

@@ -254,18 +254,15 @@ public class BucketWebController {
             mapper.map(BucketMunicipalityContainer::getDepositAmount, GetMunicipalityDepositsResponseDTO::setDepositAmount);
             mapper.map(BucketMunicipalityContainer::getDepositTimestamp, GetMunicipalityDepositsResponseDTO::setDepositTimestamp);
 
-            // Bucket
             mapper.map(src -> src.getAssociation().getBucket().getId(), (dest, v) -> dest.getBucket().setId((Long) v));
             mapper.map(src -> src.getAssociation().getBucket().getCapacity(), (dest, v) -> dest.getBucket().setCapacity((BigDecimal) v));
             mapper.map(src -> src.getAssociation().getBucket().getIsAssociated(), (dest, v) -> dest.getBucket().setIsAssociated((Boolean) v));
 
-            // Municipality (user)
             mapper.map(src -> src.getAssociation().getUser().getId(), (dest, v) -> dest.getMunicipality().setId((Long) v));
             mapper.map(src -> src.getAssociation().getUser().getId(), (dest, v) -> dest.getMunicipality().setUserId((Long) v));
             mapper.map(src -> src.getAssociation().getUser().getCitizenCardCode(), (dest, v) -> dest.getMunicipality().setCitizenCardCode((String) v));
             mapper.map(src -> src.getAssociation().getUser().getNif(), (dest, v) -> dest.getMunicipality().setNif((String) v));
 
-            // Container
             mapper.map(src -> src.getContainer().getId(), (dest, v) -> dest.getContainer().setId((Long) v));
             mapper.map(src -> src.getContainer().getCapacity(), (dest, v) -> dest.getContainer().setCapacity((BigDecimal) v));
             mapper.map(src -> src.getContainer().getLocalization(), (dest, v) -> dest.getContainer().setLocalization((String) v));

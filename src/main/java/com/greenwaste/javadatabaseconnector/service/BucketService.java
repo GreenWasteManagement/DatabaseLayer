@@ -213,9 +213,7 @@ public class BucketService {
 
         List<BucketMunicipality> entities = bucketMunicipalityRepository.findByStatusTrue();
 
-        return entities.stream()
-                .map(entity -> modelMapper.map(entity, GetActiveBucketMunicipalityAssociationsResponseDTO.class))
-                .toList();
+        return entities.stream().map(entity -> modelMapper.map(entity, GetActiveBucketMunicipalityAssociationsResponseDTO.class)).toList();
     }
 
     @Transactional(readOnly = true)
@@ -321,7 +319,7 @@ public class BucketService {
                 .findFirstByUserAndStatusTrue(municipality)
                 .orElseThrow(() -> new EntityNotFoundException("Active bucket association not found"));
 
-        // valida e cria
+
         if (amount.compareTo(assoc.getBucket().getCapacity()) > 0) {
             throw new IllegalArgumentException("Deposit exceeds bucket capacity");
         }

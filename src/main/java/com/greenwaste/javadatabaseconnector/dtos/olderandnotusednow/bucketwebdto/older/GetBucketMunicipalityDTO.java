@@ -9,7 +9,8 @@ public class GetBucketMunicipalityDTO {
     private Instant timestampOfAssociation;
     private Boolean status;
 
-    public GetBucketMunicipalityDTO() {}
+    public GetBucketMunicipalityDTO() {
+    }
 
     public GetBucketMunicipalityDTO(Long associationId, Long bucketId, Long userId,
                                     Instant timestampOfAssociation, Boolean status) {

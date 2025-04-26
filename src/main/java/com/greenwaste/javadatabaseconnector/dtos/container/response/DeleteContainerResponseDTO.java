@@ -1,6 +1,5 @@
 package com.greenwaste.javadatabaseconnector.dtos.container.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

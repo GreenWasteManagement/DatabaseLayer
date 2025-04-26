@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class GetBucketDTO {
-    // Getters e Setters
     private Long id;
     private BigDecimal capacity;
     private Boolean isAssociated;

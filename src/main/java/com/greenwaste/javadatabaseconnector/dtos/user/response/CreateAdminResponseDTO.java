@@ -1,8 +1,9 @@
 package com.greenwaste.javadatabaseconnector.dtos.user.response;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.AdminDTO;
 import com.greenwaste.javadatabaseconnector.dtos.user.request.CreateAdminRequestDTO;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

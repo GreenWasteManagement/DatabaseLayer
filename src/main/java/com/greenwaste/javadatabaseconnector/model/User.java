@@ -40,16 +40,15 @@ public class User {
     private Municipality municipality;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Smas smas;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private user_role role;
 
     public enum user_role {
         ADMIN,
         MUNICIPALITY,
         SMAS
     }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private user_role role;
 
 
        /*

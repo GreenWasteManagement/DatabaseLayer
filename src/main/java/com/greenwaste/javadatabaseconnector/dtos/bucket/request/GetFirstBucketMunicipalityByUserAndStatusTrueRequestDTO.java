@@ -1,9 +1,8 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.request;
 
-import com.greenwaste.javadatabaseconnector.dtos.base.MunicipalityDTO;
-import lombok.*;
-
-import java.util.Set;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

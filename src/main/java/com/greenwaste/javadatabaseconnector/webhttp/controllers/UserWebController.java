@@ -173,7 +173,6 @@ public class UserWebController {
 
         GetAdminByIdResponseDTO dto = new GetAdminByIdResponseDTO();
 
-        // Map internal classes
         dto.setUser(modelMapper.map(user, GetAdminByIdResponseDTO.User.class));
         dto.setAdmin(modelMapper.map(user.getAdmin(), GetAdminByIdResponseDTO.Admin.class));
         dto.setAddress(modelMapper.map(user.getAddress(), GetAdminByIdResponseDTO.Address.class));

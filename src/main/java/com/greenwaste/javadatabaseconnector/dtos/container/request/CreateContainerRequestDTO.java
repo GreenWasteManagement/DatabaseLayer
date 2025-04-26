@@ -1,6 +1,8 @@
 package com.greenwaste.javadatabaseconnector.dtos.container.request;
 
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 

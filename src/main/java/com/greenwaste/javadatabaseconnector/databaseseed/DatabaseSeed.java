@@ -9,9 +9,9 @@ import java.io.InputStream;
 @Component
 public class DatabaseSeed {
 
-    private final JdbcTemplate jdbcTemplate;
     private static final String SQL_DATABASE_CREATOR = "Scripts/DatabaseSQL/DatabaseCreation.sql";
     private static final String SQL_DATABASE_RESET = "Scripts/DatabaseSQL/DatabaseReset.sql";
+    private final JdbcTemplate jdbcTemplate;
 
 
     public DatabaseSeed(JdbcTemplate jdbcTemplate) {

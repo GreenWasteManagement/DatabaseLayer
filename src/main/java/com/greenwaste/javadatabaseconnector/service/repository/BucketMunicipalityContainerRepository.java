@@ -9,8 +9,6 @@ import java.util.List;
 public interface BucketMunicipalityContainerRepository extends JpaRepository<BucketMunicipalityContainer, Long> {
 
 
-
-
     @Query("""
                 SELECT bmc FROM BucketMunicipalityContainer bmc
                 JOIN FETCH bmc.association bm
