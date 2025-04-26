@@ -107,7 +107,7 @@
         <!-- Suporte a chaves seguras e criptografia -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId> <!-- ou jjwt-gson, se preferir -->
+            <artifactId>jjwt-jackson</artifactId>
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>

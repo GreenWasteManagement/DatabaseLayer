@@ -110,7 +110,6 @@ public class BucketService {
      * Bucket-Municipality
      */
 
-
     @Transactional(readOnly = true)
     public List<BucketMunicipality> getAllBucketMunicipalities() {
         return bucketMunicipalityRepository.findAll();
@@ -135,7 +134,6 @@ public class BucketService {
     public Optional<BucketMunicipality> getFirstByUserAndStatusTrue(Municipality user) {
         return bucketMunicipalityRepository.findFirstByUserAndStatusTrue(user);
     }
-
 
     @Transactional
     public void createBucketAssociation(Long bucketId, Long municipalityId) {
@@ -206,6 +204,7 @@ public class BucketService {
         dto.setCount(total);
         return dto;
     }
+
 
     public List<GetActiveBucketMunicipalityAssociationsResponseDTO> getActiveAssociations() {
 
