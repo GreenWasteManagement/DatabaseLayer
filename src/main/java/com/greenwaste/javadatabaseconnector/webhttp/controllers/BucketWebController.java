@@ -4,6 +4,8 @@ import com.greenwaste.javadatabaseconnector.dtos.bucket.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization;
+import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.annotation.AuthRole;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -39,13 +41,15 @@ public class BucketWebController {
     }
 
 
+    @AuthRole(role = Authorization.UserRolePermission.ADMIN)
     @GetMapping()
     public ResponseEntity<GetAllBucketsResponseDTO> getAllBuckets() {
         ModelMapper modelMapper = new ModelMapper();
 
         var buckets = bucketService.getAllBuckets();
 
-        List<GetAllBucketsResponseDTO.Bucket> bucketDTOs = buckets.stream().map(bucket -> modelMapper.map(bucket, GetAllBucketsResponseDTO.Bucket.class)).collect(Collectors.toList());
+        List<GetAllBucketsResponseDTO.Bucket> bucketDTOs = buckets.stream().map(bucket ->
+                modelMapper.map(bucket, GetAllBucketsResponseDTO.Bucket.class)).collect(Collectors.toList());
 
         GetAllBucketsResponseDTO responseDTO = new GetAllBucketsResponseDTO();
         responseDTO.setBuckets(bucketDTOs);
