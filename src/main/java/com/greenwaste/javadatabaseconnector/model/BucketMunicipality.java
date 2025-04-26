@@ -1,5 +1,6 @@
 package com.greenwaste.javadatabaseconnector.model;
 
+import com.greenwaste.javadatabaseconnector.dtos.olderandnotusednow.bucketwebdto.older.UpdateBucketRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +43,8 @@ public class BucketMunicipality {
 
     @OneToMany(mappedBy = "association")
     private Set<BucketMunicipalityContainer> bucketMunicipalityContainers = new LinkedHashSet<>();
+
+
 
        /*
     @Version

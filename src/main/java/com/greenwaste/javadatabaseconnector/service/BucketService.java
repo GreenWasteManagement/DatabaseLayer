@@ -179,19 +179,19 @@ public class BucketService {
         Bucket bucket = bucketRepository.findById(bucketId).orElseThrow(() -> new EntityNotFoundException("Bucket not found"));
         Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
 
-        // desativa antigas…
+
         bucketMunicipalityRepository.findByBucketIdAndStatus(bucketId, true).forEach(a -> {
             a.setStatus(false);
             bucketMunicipalityRepository.save(a);
         });
 
-        // cria nova
         BucketMunicipality newAssoc = new BucketMunicipality();
         newAssoc.setBucket(bucket);
         newAssoc.setUser(municipality);
         newAssoc.setTimestampOfAssociation(Instant.now());
         newAssoc.setStatus(true);
         bucketMunicipalityRepository.save(newAssoc);
+
 
         bucket.setIsAssociated(true);
         bucketRepository.save(bucket);

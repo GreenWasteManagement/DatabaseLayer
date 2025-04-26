@@ -1,15 +1,9 @@
 package com.greenwaste.javadatabaseconnector.dtos.bucket.response;
 
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Getter
-@Setter
 @Data
 public class CreateBucketAssociationResponseDTO {
     private Long id;
@@ -18,8 +12,6 @@ public class CreateBucketAssociationResponseDTO {
     private Instant timestampOfAssociation;
     private Boolean status;
 
-    @Getter
-    @Setter
     @Data
     public static class Bucket {
         private Long id;
@@ -27,8 +19,6 @@ public class CreateBucketAssociationResponseDTO {
         private Boolean isAssociated;
     }
 
-    @Getter
-    @Setter
     @Data
     public static class Municipality {
         private Long id;
@@ -37,4 +27,3 @@ public class CreateBucketAssociationResponseDTO {
         private String nif;
     }
 }
-

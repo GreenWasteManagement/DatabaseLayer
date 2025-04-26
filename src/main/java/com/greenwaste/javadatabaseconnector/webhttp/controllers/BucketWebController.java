@@ -194,11 +194,26 @@ public class BucketWebController {
 
     @PostMapping("/bucket-association")
     public ResponseEntity<CreateBucketAssociationResponseDTO> createAndReturn(@RequestBody CreateBucketAssociationRequestDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
 
         BucketMunicipality result = bucketService.createBucketAssociationAndGet(dto.getBucketId(), dto.getMunicipalityId());
 
-        CreateBucketAssociationResponseDTO responseDTO = modelMapper.map(result, CreateBucketAssociationResponseDTO.class);
+        CreateBucketAssociationResponseDTO responseDTO = new CreateBucketAssociationResponseDTO();
+        responseDTO.setId(result.getId());
+        responseDTO.setTimestampOfAssociation(result.getTimestampOfAssociation());
+        responseDTO.setStatus(result.getStatus());
+
+        CreateBucketAssociationResponseDTO.Bucket bucketDTO = new CreateBucketAssociationResponseDTO.Bucket();
+        bucketDTO.setId(result.getBucket().getId());
+        bucketDTO.setCapacity(result.getBucket().getCapacity());
+        bucketDTO.setIsAssociated(result.getBucket().getIsAssociated());
+        responseDTO.setBucket(bucketDTO);
+
+        CreateBucketAssociationResponseDTO.Municipality municipalityDTO = new CreateBucketAssociationResponseDTO.Municipality();
+        municipalityDTO.setId(result.getUser().getId());
+        municipalityDTO.setUserId(result.getUser().getUser().getId());
+        municipalityDTO.setCitizenCardCode(result.getUser().getCitizenCardCode());
+        municipalityDTO.setNif(result.getUser().getNif());
+        responseDTO.setMunicipality(municipalityDTO);
 
         return ResponseEntity.ok(responseDTO);
     }
