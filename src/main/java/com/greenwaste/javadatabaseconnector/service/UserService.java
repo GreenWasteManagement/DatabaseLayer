@@ -481,6 +481,14 @@ public class UserService {
             throw new BadCredentialsException("Senha inválida");
         }
 
+        String token = jwtService.generateToken(user);
+
+       boolean verified_token = jwtService.validateToken(token, email);
+
+       if (!verified_token) {
+           throw new BadCredentialsException("Token Error");
+       }
+
         return jwtService.generateToken(user);
     }
 
