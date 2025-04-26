@@ -239,8 +239,7 @@ public class BucketWebController {
 
         modelMapper.getConfiguration().setSkipNullEnabled(true);
 
-        TypeMap<BucketMunicipalityContainer, GetMunicipalityDepositsResponseDTO> typeMap =
-                modelMapper.createTypeMap(BucketMunicipalityContainer.class, GetMunicipalityDepositsResponseDTO.class);
+        TypeMap<BucketMunicipalityContainer, GetMunicipalityDepositsResponseDTO> typeMap = modelMapper.createTypeMap(BucketMunicipalityContainer.class, GetMunicipalityDepositsResponseDTO.class);
 
         typeMap.setProvider(request -> {
             GetMunicipalityDepositsResponseDTO dto = new GetMunicipalityDepositsResponseDTO();
@@ -273,9 +272,7 @@ public class BucketWebController {
             mapper.map(src -> src.getContainer().getCurrentVolumeLevel(), (dest, v) -> dest.getContainer().setCurrentVolumeLevel((BigDecimal) v));
         });
 
-        List<GetMunicipalityDepositsResponseDTO> response = deposits.stream()
-                .map(deposit -> modelMapper.map(deposit, GetMunicipalityDepositsResponseDTO.class))
-                .toList();
+        List<GetMunicipalityDepositsResponseDTO> response = deposits.stream().map(deposit -> modelMapper.map(deposit, GetMunicipalityDepositsResponseDTO.class)).toList();
 
         return ResponseEntity.ok(response);
     }
