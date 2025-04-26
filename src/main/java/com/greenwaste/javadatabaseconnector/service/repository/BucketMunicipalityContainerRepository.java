@@ -8,17 +8,7 @@ import java.util.List;
 
 public interface BucketMunicipalityContainerRepository extends JpaRepository<BucketMunicipalityContainer, Long> {
 
-    @Query("""
-    SELECT bmc FROM BucketMunicipalityContainer bmc
-    JOIN FETCH bmc.association bm
-    JOIN FETCH bm.bucket b
-    JOIN FETCH bm.user m
-    JOIN FETCH m.user u
-    JOIN FETCH u.address a
-    JOIN FETCH a.postalCode pc
-    WHERE b.isAssociated = true
-""")
-    List<BucketMunicipalityContainer> findAllActiveWithRelations();
+
 
 
     @Query("""

@@ -180,7 +180,7 @@ public class BucketService {
         Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
 
         // desativa antigas…
-        bucketMunicipalityRepository.findByUserIdAndStatus(municipalityId, true).forEach(a -> {
+        bucketMunicipalityRepository.findByBucketIdAndStatus(bucketId, true).forEach(a -> {
             a.setStatus(false);
             bucketMunicipalityRepository.save(a);
         });

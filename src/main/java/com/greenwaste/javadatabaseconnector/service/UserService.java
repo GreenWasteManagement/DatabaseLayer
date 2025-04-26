@@ -30,9 +30,9 @@ public class UserService {
     private final BCryptService bcryptService;
     private final JwtService jwtService;
     private final BCryptService bCryptService;
-    private final BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository;
+    private final BucketMunicipalityRepository bucketMunicipalityRepository;
 
-    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService, BCryptService bCryptService, BucketMunicipalityContainerRepository bucketMunicipalityContainerRepository) {
+    public UserService(UserRepository userRepository, AdminRepository adminRepository, SmasRepository smasRepository, MunicipalityRepository municipalityRepository, AddressRepository addressRepository, PostalCodeRepository postalCodeRepository, BCryptService bcryptService, JwtService jwtService, BCryptService bCryptService, BucketMunicipalityRepository bucketMunicipalityRepository) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
         this.smasRepository = smasRepository;
@@ -42,7 +42,7 @@ public class UserService {
         this.bcryptService = bcryptService;
         this.jwtService = jwtService;
         this.bCryptService = bCryptService;
-        this.bucketMunicipalityContainerRepository = bucketMunicipalityContainerRepository;
+        this.bucketMunicipalityRepository = bucketMunicipalityRepository;
     }
 
 
@@ -427,15 +427,15 @@ public class UserService {
         return users;
     }
 
+    @Transactional()
     public GetAllMunicipalitiesAndBucketsResponseDTO getAllMunicipalitiesWithActiveBuckets() {
         ModelMapper modelMapper = new ModelMapper();
 
-        List<BucketMunicipalityContainer> containers = bucketMunicipalityContainerRepository.findAllActiveWithRelations();
+        List<BucketMunicipality> associations = bucketMunicipalityRepository.findAllActiveWithRelations();
 
         Map<Long, GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData> municipalityMap = new HashMap<>();
 
-        for (BucketMunicipalityContainer container : containers) {
-            BucketMunicipality association = container.getAssociation();
+        for (BucketMunicipality association : associations) {
             Municipality municipality = association.getUser().getUser().getMunicipality();
             Long municipalityId = municipality.getId();
 
@@ -464,6 +464,8 @@ public class UserService {
         return response;
     }
 
+
+    @Transactional()
     public CountMunicipalityUsersResponseDTO getCountMunicipalityUsers() {
         long count = userRepository.countMunicipalityUsers();
         CountMunicipalityUsersResponseDTO response = new CountMunicipalityUsersResponseDTO();
@@ -471,6 +473,7 @@ public class UserService {
         return response;
     }
 
+    @Transactional()
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
 
@@ -481,6 +484,7 @@ public class UserService {
         return jwtService.generateToken(user);
     }
 
+    @Transactional()
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found"));
     }
