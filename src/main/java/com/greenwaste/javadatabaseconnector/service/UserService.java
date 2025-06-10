@@ -466,6 +466,46 @@ public class UserService {
 
 
     @Transactional()
+    public GetAllMunicipalitiesAndBucketsResponseDTO getAllBucketAssociationsByMunicipalityId(Long paramMunicipalityId) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<BucketMunicipality> associations = bucketMunicipalityRepository.findAllBucketsWithRelationsByMunicipality(paramMunicipalityId);
+
+        Map<Long, GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData> municipalityMap = new HashMap<>();
+
+        for (BucketMunicipality association : associations) {
+            Municipality municipality = association.getUser().getUser().getMunicipality();
+            Long municipalityId = municipality.getId();
+
+            GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData data = municipalityMap.computeIfAbsent(municipalityId, id -> {
+                GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData dto = new GetAllMunicipalitiesAndBucketsResponseDTO.MunicipalityData();
+                dto.setUser(modelMapper.map(municipality.getUser(), GetAllMunicipalitiesAndBucketsResponseDTO.User.class));
+                dto.setMunicipality(modelMapper.map(municipality, GetAllMunicipalitiesAndBucketsResponseDTO.Municipality.class));
+                dto.setAddress(modelMapper.map(municipality.getUser().getAddress(), GetAllMunicipalitiesAndBucketsResponseDTO.Address.class));
+                dto.setPostalCode(modelMapper.map(municipality.getUser().getAddress().getPostalCode(), GetAllMunicipalitiesAndBucketsResponseDTO.PostalCode.class));
+                dto.setBuckets(new ArrayList<>());
+                return dto;
+            });
+
+            GetAllMunicipalitiesAndBucketsResponseDTO.Bucket bucketDTO = new GetAllMunicipalitiesAndBucketsResponseDTO.Bucket();
+            bucketDTO.setId(association.getBucket().getId());
+            bucketDTO.setCapacity(association.getBucket().getCapacity());
+            bucketDTO.setStatus(association.getBucket().getIsAssociated());
+
+            if (!data.getBuckets().stream().anyMatch(b -> b.getId().equals(bucketDTO.getId()))) {
+                data.getBuckets().add(bucketDTO);
+            }
+        }
+
+        GetAllMunicipalitiesAndBucketsResponseDTO response = new GetAllMunicipalitiesAndBucketsResponseDTO();
+        response.setMunicipalities(new ArrayList<>(municipalityMap.values()));
+        return response;
+    }
+
+
+
+
+    @Transactional()
     public CountMunicipalityUsersResponseDTO getCountMunicipalityUsers() {
         long count = userRepository.countMunicipalityUsers();
         CountMunicipalityUsersResponseDTO response = new CountMunicipalityUsersResponseDTO();

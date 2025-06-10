@@ -305,6 +305,14 @@ public class UserWebController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get/municipalities/{id}/buckets")
+    public ResponseEntity<GetAllMunicipalitiesAndBucketsResponseDTO> getAllMunicipalitiesWithActiveBuckets(@PathVariable Long id) {
+        GetAllMunicipalitiesAndBucketsResponseDTO response = userService.getAllBucketAssociationsByMunicipalityId(id);
+        return ResponseEntity.ok(response);
+    }
+
+
+
     @GetMapping("/count/municipality")
     public ResponseEntity<CountMunicipalityUsersResponseDTO> getCountMunicipalityUsers() {
         CountMunicipalityUsersResponseDTO responseDTO = userService.getCountMunicipalityUsers();
