@@ -48,8 +48,7 @@ public class BucketWebController {
 
         var buckets = bucketService.getAllBuckets();
 
-        List<GetAllBucketsResponseDTO.Bucket> bucketDTOs = buckets.stream().map(bucket ->
-                modelMapper.map(bucket, GetAllBucketsResponseDTO.Bucket.class)).collect(Collectors.toList());
+        List<GetAllBucketsResponseDTO.Bucket> bucketDTOs = buckets.stream().map(bucket -> modelMapper.map(bucket, GetAllBucketsResponseDTO.Bucket.class)).collect(Collectors.toList());
 
         GetAllBucketsResponseDTO responseDTO = new GetAllBucketsResponseDTO();
         responseDTO.setBuckets(bucketDTOs);
@@ -322,9 +321,6 @@ public class BucketWebController {
 
         return ResponseEntity.ok(response);
     }
-
-
-
 
 
     @GetMapping("/with-municipalities")
