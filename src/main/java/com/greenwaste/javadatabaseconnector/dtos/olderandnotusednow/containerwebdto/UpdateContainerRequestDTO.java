@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 public class UpdateContainerRequestDTO {
     @NotNull
     private Long id;
-    private BigDecimal capacity;
+    private BigDecimal capacity = BigDecimal.ZERO;
     private String localization;
-    private BigDecimal currentVolumeLevel;
+    private BigDecimal currentVolumeLevel = BigDecimal.ZERO;
 
 
     public Long getId() {

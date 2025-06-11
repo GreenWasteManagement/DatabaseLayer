@@ -81,31 +81,34 @@ public class BucketService {
      * Deposit
      */
     @Transactional
-    public void createDeposit(Municipality municipalityDeposit, Container containerDeposit, BigDecimal depositAmount) {
+    public void createDeposit(Municipality municipalityDeposit, Long containerId, BigDecimal depositAmount) {
         Optional<BucketMunicipality> bucketAssociationOpt = bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
+        Optional<Container> containerOpt = containerRepository.findById(containerId);
 
-        if (bucketAssociationOpt.isPresent()) {
+        if (bucketAssociationOpt.isPresent() && containerOpt.isPresent()) {
             BucketMunicipality bucketAssociation = bucketAssociationOpt.get();
+            Container container = containerOpt.get(); // Container completo
             Bucket bucket = bucketAssociation.getBucket();
 
             if (depositAmount.compareTo(bucket.getCapacity()) <= 0) {
-                BigDecimal novoVolume = containerDeposit.getCurrentVolumeLevel().add(depositAmount);
+                BigDecimal novoVolume = container.getCurrentVolumeLevel().add(depositAmount);
 
-                if (novoVolume.compareTo(containerDeposit.getCapacity()) <= 0) {
+                if (novoVolume.compareTo(container.getCapacity()) <= 0) {
                     BucketMunicipalityContainer deposit = new BucketMunicipalityContainer();
                     deposit.setAssociation(bucketAssociation);
-                    deposit.setContainer(containerDeposit);
+                    deposit.setContainer(container);
                     deposit.setDepositAmount(depositAmount);
                     deposit.setDepositTimestamp(Instant.now());
 
                     bucketMunicipalityContainerRepository.save(deposit);
 
-                    containerDeposit.setCurrentVolumeLevel(novoVolume);
-                    containerRepository.save(containerDeposit);
+                    container.setCurrentVolumeLevel(novoVolume);
+                    containerRepository.save(container); // Agora 'capacity' não é null
                 }
             }
         }
     }
+
 
     /*
      * Bucket-Municipality
@@ -170,7 +173,7 @@ public class BucketService {
     public void createDepositByIds(Long municipalityId, Long containerId, BigDecimal depositAmount) {
         Municipality municipality = municipalityRepository.findById(municipalityId).orElseThrow(() -> new EntityNotFoundException("Municipality not found"));
         Container container = containerRepository.findById(containerId).orElseThrow(() -> new EntityNotFoundException("Container not found"));
-        createDeposit(municipality, container, depositAmount);
+        createDeposit(municipality, container.getId(), depositAmount);
     }
 
     @Transactional

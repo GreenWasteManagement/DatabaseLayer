@@ -4,6 +4,7 @@ import com.greenwaste.javadatabaseconnector.dtos.bucket.request.*;
 import com.greenwaste.javadatabaseconnector.dtos.bucket.response.*;
 import com.greenwaste.javadatabaseconnector.model.*;
 import com.greenwaste.javadatabaseconnector.service.BucketService;
+import com.greenwaste.javadatabaseconnector.service.repository.BucketMunicipalityRepository;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.Authorization;
 import com.greenwaste.javadatabaseconnector.webhttp.authorization.jwtreader.annotation.AuthRole;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class BucketWebController {
 
     private final BucketService bucketService;
+    private final BucketMunicipalityRepository bucketMunicipalityRepository;
 
 
-    public BucketWebController(BucketService bucketService) {
+    public BucketWebController(BucketService bucketService, BucketMunicipalityRepository bucketMunicipalityRepository) {
         this.bucketService = bucketService;
+        this.bucketMunicipalityRepository = bucketMunicipalityRepository;
     }
 
     @GetMapping("/{id}")
@@ -104,7 +107,8 @@ public class BucketWebController {
         Municipality municipality = modelMapper.map(requestDTO.getMunicipality(), Municipality.class);
         Container container = modelMapper.map(requestDTO.getContainer(), Container.class);
 
-        bucketService.createDeposit(municipality, container, requestDTO.getDepositAmount());
+
+        bucketService.createDeposit(municipality, container.getId(), requestDTO.getDepositAmount());
 
         CreateDepositResponseDTO responseDTO = new CreateDepositResponseDTO();
         responseDTO.setDepositTimestamp(Instant.now());
@@ -118,6 +122,20 @@ public class BucketWebController {
         ModelMapper modelMapper = new ModelMapper();
 
         var entities = bucketService.getAllBucketMunicipalities();
+
+        List<GetAllBucketMunicipalitiesResponseDTO.BucketMunicipality> bucketMunicipalityDTOs = entities.stream().map(entity -> modelMapper.map(entity, GetAllBucketMunicipalitiesResponseDTO.BucketMunicipality.class)).collect(Collectors.toList());
+
+        GetAllBucketMunicipalitiesResponseDTO responseDTO = new GetAllBucketMunicipalitiesResponseDTO();
+        responseDTO.setBucketMunicipalities(bucketMunicipalityDTOs);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/buckets-municipalities/{municipalityId}")
+    public ResponseEntity<GetAllBucketMunicipalitiesResponseDTO> getAllByMunicipality(@PathVariable Long municipalityId) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        var entities = bucketMunicipalityRepository.findByMunicipality(municipalityId);
 
         List<GetAllBucketMunicipalitiesResponseDTO.BucketMunicipality> bucketMunicipalityDTOs = entities.stream().map(entity -> modelMapper.map(entity, GetAllBucketMunicipalitiesResponseDTO.BucketMunicipality.class)).collect(Collectors.toList());
 

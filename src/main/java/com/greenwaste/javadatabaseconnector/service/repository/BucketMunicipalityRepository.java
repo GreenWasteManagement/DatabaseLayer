@@ -31,6 +31,15 @@ public interface BucketMunicipalityRepository extends JpaRepository<BucketMunici
             """)
     List<BucketMunicipality> findByStatusTrue();
 
+    @Query("""
+                SELECT bm FROM BucketMunicipality bm
+                JOIN FETCH bm.bucket
+                JOIN FETCH bm.user u
+                JOIN FETCH u.user
+                WHERE u.id = :municipalityId
+            """)
+    List<BucketMunicipality> findByMunicipality(Long municipalityId);
+
 
     @Query("""
                 SELECT bm FROM BucketMunicipality bm

@@ -142,11 +142,11 @@ public class DatabasePopulator {
         bucketService.createBucketAssociation(theBucket.getId(), theMunicipality.getId());
 
 
-        bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(20));
-        bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(30));
-        bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(50));
-        bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(100));
-        bucketService.createDeposit(municipality, theContainer, BigDecimal.valueOf(50));
+        bucketService.createDeposit(municipality, theContainer.getId(), BigDecimal.valueOf(20));
+        bucketService.createDeposit(municipality, theContainer.getId(), BigDecimal.valueOf(30));
+        bucketService.createDeposit(municipality, theContainer.getId(), BigDecimal.valueOf(50));
+        bucketService.createDeposit(municipality, theContainer.getId(), BigDecimal.valueOf(100));
+        bucketService.createDeposit(municipality, theContainer.getId(), BigDecimal.valueOf(50));
 
         containerService.containerUnloading(smas.getId(), theContainer.getId());
 

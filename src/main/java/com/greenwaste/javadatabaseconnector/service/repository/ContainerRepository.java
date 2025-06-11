@@ -18,4 +18,6 @@ public interface ContainerRepository extends JpaRepository<Container, Long> {
     @OneToMany(mappedBy = "container", fetch = FetchType.EAGER)
     Set<ContainerUnloading> containerUnloadings = new LinkedHashSet<>();
 
+    Container getContainerById(Long id);
+
 }
