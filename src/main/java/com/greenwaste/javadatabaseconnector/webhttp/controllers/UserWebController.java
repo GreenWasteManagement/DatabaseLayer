@@ -312,7 +312,6 @@ public class UserWebController {
     }
 
 
-
     @GetMapping("/count/municipality")
     public ResponseEntity<CountMunicipalityUsersResponseDTO> getCountMunicipalityUsers() {
         CountMunicipalityUsersResponseDTO responseDTO = userService.getCountMunicipalityUsers();

@@ -108,12 +108,17 @@ public class BucketWebController {
         Container container = modelMapper.map(requestDTO.getContainer(), Container.class);
 
 
-        bucketService.createDeposit(municipality, container.getId(), requestDTO.getDepositAmount());
+        Boolean status = bucketService.createDeposit(municipality, container.getId(), requestDTO.getDepositAmount());
 
         CreateDepositResponseDTO responseDTO = new CreateDepositResponseDTO();
         responseDTO.setDepositTimestamp(Instant.now());
 
-        return ResponseEntity.ok(responseDTO);
+        if (status.equals(true)) {
+            return ResponseEntity.ok(responseDTO);
+
+        } else {
+            return ResponseEntity.internalServerError().body(responseDTO);
+        }
     }
 
 

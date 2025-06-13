@@ -81,13 +81,13 @@ public class BucketService {
      * Deposit
      */
     @Transactional
-    public void createDeposit(Municipality municipalityDeposit, Long containerId, BigDecimal depositAmount) {
+    public Boolean createDeposit(Municipality municipalityDeposit, Long containerId, BigDecimal depositAmount) {
         Optional<BucketMunicipality> bucketAssociationOpt = bucketMunicipalityRepository.findFirstByUserAndStatusTrue(municipalityDeposit);
         Optional<Container> containerOpt = containerRepository.findById(containerId);
 
         if (bucketAssociationOpt.isPresent() && containerOpt.isPresent()) {
             BucketMunicipality bucketAssociation = bucketAssociationOpt.get();
-            Container container = containerOpt.get(); // Container completo
+            Container container = containerOpt.get();
             Bucket bucket = bucketAssociation.getBucket();
 
             if (depositAmount.compareTo(bucket.getCapacity()) <= 0) {
@@ -103,10 +103,12 @@ public class BucketService {
                     bucketMunicipalityContainerRepository.save(deposit);
 
                     container.setCurrentVolumeLevel(novoVolume);
-                    containerRepository.save(container); // Agora 'capacity' não é null
+                    containerRepository.save(container);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
 
@@ -225,7 +227,7 @@ public class BucketService {
     }
 
     @Transactional
-    public List<BucketMunicipalityContainer> getAllBucketDepositsByMunicipality(Long municipality){
+    public List<BucketMunicipalityContainer> getAllBucketDepositsByMunicipality(Long municipality) {
         return bucketMunicipalityContainerRepository.findAllBucketDepositsByMunicipality(municipality);
     }
 

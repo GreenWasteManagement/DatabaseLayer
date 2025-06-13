@@ -503,8 +503,6 @@ public class UserService {
     }
 
 
-
-
     @Transactional()
     public CountMunicipalityUsersResponseDTO getCountMunicipalityUsers() {
         long count = userRepository.countMunicipalityUsers();
@@ -523,11 +521,11 @@ public class UserService {
 
         String token = jwtService.generateToken(user);
 
-       boolean verified_token = jwtService.validateToken(token, email);
+        boolean verified_token = jwtService.validateToken(token, email);
 
-       if (!verified_token) {
-           throw new BadCredentialsException("Token Error");
-       }
+        if (!verified_token) {
+            throw new BadCredentialsException("Token Error");
+        }
 
         return jwtService.generateToken(user);
     }
